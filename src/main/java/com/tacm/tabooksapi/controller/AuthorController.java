@@ -4,6 +4,8 @@ import com.tacm.tabooksapi.domain.dto.AuthorDto;
 import com.tacm.tabooksapi.domain.entities.AuthorEntity;
 import com.tacm.tabooksapi.mapper.Mapper;
 import com.tacm.tabooksapi.service.AuthorService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ public class AuthorController {
     private AuthorService authorService;
     private Mapper<AuthorEntity, AuthorDto> authorMapper;
 
+    @Autowired
     public AuthorController(AuthorService authorService, Mapper<AuthorEntity, AuthorDto> authorMapper) {
         this.authorService = authorService;
         this.authorMapper = authorMapper;
@@ -84,5 +87,4 @@ public class AuthorController {
         authorService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

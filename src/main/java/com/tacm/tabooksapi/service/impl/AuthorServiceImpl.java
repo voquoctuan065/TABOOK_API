@@ -3,6 +3,8 @@ package com.tacm.tabooksapi.service.impl;
 import com.tacm.tabooksapi.domain.entities.AuthorEntity;
 import com.tacm.tabooksapi.repository.AuthorRepository;
 import com.tacm.tabooksapi.service.AuthorService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.stream.StreamSupport;
 public class AuthorServiceImpl implements AuthorService {
     private AuthorRepository authorRepository;
 
+    @Autowired
     public AuthorServiceImpl(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
