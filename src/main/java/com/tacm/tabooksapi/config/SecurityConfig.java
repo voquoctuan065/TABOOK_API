@@ -1,55 +1,67 @@
 package com.tacm.tabooksapi.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import com.tacm.tabooksapi.service.UserDtService;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private UserDtService userDtService;
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
+
+    
+    
 
     @SuppressWarnings("deprecation")
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .authorizeRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeRequests(request -> request.anyRequest().permitAll()
+                    //.requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                    //.requestMatchers("/user/**").hasAnyAuthority("USER")
+                //.anyRequest().authenticated())
+                )
+                .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider()).addFilterBefore(
+                    jwtAuthFilter, UsernamePasswordAuthenticationFilter.class
+                )
                 .build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new MD5PasswordEncoder();
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDtService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return daoAuthenticationProvider;
     }
 
-    private static class MD5PasswordEncoder implements PasswordEncoder {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-        @Override
-        public String encode(CharSequence rawPassword) {
-            try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                byte[] messageDigest = md.digest(rawPassword.toString().getBytes());
-                StringBuilder hexString = new StringBuilder();
-                for (byte b : messageDigest) {
-                    String hex = Integer.toHexString(0xff & b);
-                    if (hex.length() == 1) {
-                        hexString.append('0');
-                    }
-                    hexString.append(hex);
-                }
-                return hexString.toString();
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException("MD5 algorithm not found", e);
-            }
-        }
-
-        @Override
-        public boolean matches(CharSequence rawPassword, String encodedPassword) {
-            return encode(rawPassword).equals(encodedPassword);
-        }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }
