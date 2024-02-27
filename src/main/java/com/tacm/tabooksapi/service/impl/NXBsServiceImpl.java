@@ -7,11 +7,13 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.tacm.tabooksapi.domain.entities.NXBs;
 import com.tacm.tabooksapi.repository.NXBsRepository;
 import com.tacm.tabooksapi.service.NXBsService;
 
+@Service
 public class NXBsServiceImpl implements NXBsService{
     @Autowired
     private NXBsRepository nxbsRepository;
