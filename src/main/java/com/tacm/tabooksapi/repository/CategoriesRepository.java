@@ -12,9 +12,9 @@ import java.util.List;
 
 @Repository
 public interface CategoriesRepository extends JpaRepository<Categories, Long> {
-    @Query("SELECT c FROM Categories c WHERE LOWER(c.category_name) LIKE LOWER(CONCAT(:keyword, '%')) OR " +
-            "LOWER(c.category_name) LIKE LOWER(:keyword) OR " +
-            "LOWER(c.category_name) LIKE LOWER(CONCAT('%', :keyword)) OR " +
-            "LOWER(c.category_name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT c FROM Categories c WHERE LOWER(c.categoryName) LIKE LOWER(CONCAT(:keyword, '%')) OR " +
+            "LOWER(c.categoryName) LIKE LOWER(:keyword) OR " +
+            "LOWER(c.categoryName) LIKE LOWER(CONCAT('%', :keyword)) OR " +
+            "LOWER(c.categoryName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Categories> findByCategoryNameContainingIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
 }

@@ -14,11 +14,21 @@ import lombok.NoArgsConstructor;
 public class PaymentInfomation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long payinfo_id;
-    private String cardholder_name;
-    private String card_number;
-    private LocalDate expiration_date;
+    @Column(name = "payinfo_id")
+    private Long payinfoId;
+
+    @Column(name = "card_holder_name")
+    private String cardHolderName;
+
+    @Column(name = "card_number")
+    private String cardNumber;
+
+    @Column(name = "expiration_date")
+    private LocalDate expirationDate;
+
+    @Column(name = "cvv")
     private String cvv;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;

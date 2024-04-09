@@ -21,20 +21,29 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Users")
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    @Column(name = "user_id")
+    private Long userId;
 
-    private String full_name;
+    @Column(name = "full_name")
+    private String fullName;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "role")
     private String role;
 
-    private String phone_number;
-    private String user_image;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "user_image")
+    private String userImage;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private List<Address> address = new ArrayList<>();

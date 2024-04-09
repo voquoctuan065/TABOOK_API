@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CartItemRepository  extends JpaRepository<CartItem, Long> {
-    @Query("select ci from CartItem ci where ci.cart = :cart and ci.books = :books and ci.user_id = :user_id")
+    @Query("select ci from CartItem ci where ci.cart = :cart and ci.books = :books and ci.userId = :user_id")
     CartItem isCartItemExist(
             @Param("cart")Cart cart, @Param("books")Books books, @Param("user_id") Long user_id
             );

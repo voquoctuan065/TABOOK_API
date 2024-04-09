@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Reviews, Long> {
 
-    @Query("select rv from Reviews rv where rv.books.book_id = :book_id")
+    @Query("select rv from Reviews rv where rv.books.bookId = :book_id")
     List<Reviews> getAllBookReview(@Param("book_id") Long book_id);
 }

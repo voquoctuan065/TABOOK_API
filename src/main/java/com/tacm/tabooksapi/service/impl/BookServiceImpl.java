@@ -36,7 +36,7 @@ public class BookServiceImpl implements BookService {
     }
     @Override
     public Books createBook(Books books) {
-        books.setCreated_at(LocalDateTime.now());
+        books.setCreatedAt(LocalDateTime.now());
         return bookRepository.save(books);
     }
 
@@ -63,8 +63,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public Books updateBook(Long id, Books books) throws ProductException {
         Books foundedBook = findBookById(id);
-        if(foundedBook.getStock_quantity() != 0) {
-            foundedBook.setStock_quantity(foundedBook.getStock_quantity());
+        if(foundedBook.getStockQuantity() != 0) {
+            foundedBook.setStockQuantity(foundedBook.getStockQuantity());
         }
         return bookRepository.save(foundedBook);
     }
@@ -90,10 +90,10 @@ public class BookServiceImpl implements BookService {
 
         if (stock != null) {
             if(stock.equals("in_stock")) {
-                books = books.stream().filter(b -> b.getStock_quantity()>0).collect(Collectors.toList());
+                books = books.stream().filter(b -> b.getStockQuantity()>0).collect(Collectors.toList());
             }
             else if(stock.equals("out_of_stock")) {
-                books = books.stream().filter(b -> b.getStock_quantity()<1).collect(Collectors.toList());
+                books = books.stream().filter(b -> b.getStockQuantity()<1).collect(Collectors.toList());
             }
         }
         int startIndex = (int)pageable.getOffset();

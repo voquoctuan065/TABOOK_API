@@ -1,11 +1,6 @@
 package com.tacm.tabooksapi.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,16 +12,23 @@ import lombok.NoArgsConstructor;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long address_id;
-    private String street_address;
+    @Column(name = "address_id")
+    private Long addressId;
+    @Column(name="street_address")
+    private String streetAddress;
+    @Column(name = "ward")
     private String ward;
+    @Column(name = "district")
     private String district;
+    @Column(name = "province")
     private String province;
-    private String zip_code;
+    @Column(name = "zip_code")
+    private String zipCode;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;
 
-    private String phone_number;
+    @Column(name="phone_number")
+    private String phoneNumber;
 }

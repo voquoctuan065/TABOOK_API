@@ -16,30 +16,42 @@ import java.util.List;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long order_id;
+    @Column(name = "order_id")
+    private Long orderId;
 
     @ManyToOne
     private Users users;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> order_item = new ArrayList<>();
+    private List<OrderItem> orderItem = new ArrayList<>();
 
-    private LocalDateTime order_date;
-    private LocalDateTime delivery_date;
+    @Column(name = "order_date")
+    private LocalDateTime orderDate;
+
+    @Column(name = "delivery_date")
+    private LocalDateTime deliveryDate;
 
     @OneToOne
-    private Address shipping_address;
+    private Address shippingAddress;
 
     @Embedded
-    private PaymentDetail payment_detail = new PaymentDetail();
+    private PaymentDetail paymentDetail = new PaymentDetail();
 
-    private Double total_price;
+    @Column(name = "total_price")
+    private Double totalPrice;
+
+    @Column(name = "total_discounted_price")
     private Double totalDiscountedPrice;
+
+    @Column(name = "discount")
     private Double discount;
 
-    private String order_status;
+    @Column(name = "order_status")
+    private String orderStatus;
 
-    private Integer total_item;
+    @Column(name = "total_item")
+    private Integer totalItem;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

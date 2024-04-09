@@ -39,7 +39,6 @@ public class AdminBookController {
         ApiResponse res = new ApiResponse();
         res.setMessage("book deleted successfully");
         res.setStatus(true);
-
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

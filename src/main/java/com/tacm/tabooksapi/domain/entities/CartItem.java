@@ -15,7 +15,8 @@ import java.math.BigDecimal;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartItem_id;
+    @Column(name = "cart_item_id", nullable = false)
+    private Long cartItemId;
 
     @ManyToOne
     @JsonIgnore
@@ -24,9 +25,16 @@ public class CartItem {
     @ManyToOne
     private Books books;
 
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "price", nullable = false)
     private Double price;
-    private Double discounted_price;
-    private Long user_id;
+
+    @Column(name = "discounted_price", nullable = false)
+    private Double discountedPrice;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
 }

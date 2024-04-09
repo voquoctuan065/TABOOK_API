@@ -13,12 +13,12 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Books, Long> {
     @Query(
             "select b from Books b " +
-                    "where (:category is null or b.categories.category_name = :category) " +
-                    "and ((:minPrice is null and :maxPrice is null) or (b.discounted_price between :minPrice and :maxPrice)) " +
-                    "and (:minDiscount is null or b.discount_percent >= :minDiscount) " +
+                    "where (:category is null or b.categories.categoryName = :category) " +
+                    "and ((:minPrice is null and :maxPrice is null) or (b.discountedPrice between :minPrice and :maxPrice)) " +
+                    "and (:minDiscount is null or b.discountPercent >= :minDiscount) " +
                     "order by " +
-                    "case when :sort = 'price_low' then b.discounted_price end asc, " +
-                    "case when :sort = 'price_high' then b.discounted_price end desc"
+                    "case when :sort = 'price_low' then b.discountedPrice end asc, " +
+                    "case when :sort = 'price_high' then b.discountedPrice end desc"
     )
     public List<Books> filterBook(
             @Param("category") String category,

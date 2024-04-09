@@ -31,8 +31,8 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public CartItem createCartItem(CartItem cartItem) {
         cartItem.setQuantity(1);
-        cartItem.setPrice(cartItem.getBooks().getBook_price() * cartItem.getQuantity());
-        cartItem.setDiscounted_price(cartItem.getBooks().getDiscounted_price() * cartItem.getQuantity());
+        cartItem.setPrice(cartItem.getBooks().getBookPrice() * cartItem.getQuantity());
+        cartItem.setDiscountedPrice(cartItem.getBooks().getDiscountedPrice() * cartItem.getQuantity());
         CartItem savedCartItem = cartItemRepository.save(cartItem);
         return savedCartItem;
     }
@@ -40,11 +40,11 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public CartItem updateCartItem(Long user_id, Long id, CartItem cartItem) throws CartItemException, UserException {
         CartItem item = findCartItemById(id);
-        Users user = userService.findUserById(item.getUser_id());
-        if(user.getUser_id().equals(user_id)) {
+        Users user = userService.findUserById(item.getUserId());
+        if(user.getUserId().equals(user_id)) {
             item.setQuantity(cartItem.getQuantity());
-            item.setPrice(item.getQuantity()*item.getBooks().getBook_price());
-            item.setDiscounted_price(item.getBooks().getDiscounted_price()*item.getQuantity());
+            item.setPrice(item.getQuantity()*item.getBooks().getBookPrice());
+            item.setDiscountedPrice(item.getBooks().getDiscountedPrice()*item.getQuantity());
         }
         return cartItemRepository.save(item);
     }
@@ -59,11 +59,11 @@ public class CartItemServiceImpl implements CartItemService {
     public void removeCartItem(Long user_id, Long cartItem_id) throws CartItemException, UserException {
         CartItem cartItem = findCartItemById(cartItem_id);
 
-        Users user = userService.findUserById(cartItem.getUser_id());
+        Users user = userService.findUserById(cartItem.getUserId());
 
         Users reqUser = userService.findUserById(user_id);
 
-        if(user.getUser_id().equals(reqUser.getUser_id())) {
+        if(user.getUserId().equals(reqUser.getUserId())) {
             cartItemRepository.deleteById(cartItem_id);
         }
         else {

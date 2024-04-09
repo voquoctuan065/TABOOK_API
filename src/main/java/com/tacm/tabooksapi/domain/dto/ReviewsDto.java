@@ -13,6 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ReviewsDto {
-    private Long book_id;
+    private Long bookId;
     private String review;
 }

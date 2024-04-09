@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddItemRequest {
-    private Long book_id;
+    private Long bookId;
 
     private Integer quantity;
 

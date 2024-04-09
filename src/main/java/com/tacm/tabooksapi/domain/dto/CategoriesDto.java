@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CategoriesDto {
-    private Long category_id;
-    private String category_name;
+    private Long categoryId;
+    private String categoryName;
     private Categories parentCategory;
     private Integer level;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

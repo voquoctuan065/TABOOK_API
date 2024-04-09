@@ -41,20 +41,20 @@ public class CartServiceImpl implements CartService {
     public String addCartItem(Long user_id, AddItemRequest rq) throws ProductException {
         Cart cart = cartRepository.findByUserId(user_id);
 
-        Books books = bookService.findBookById(rq.getBook_id());
+        Books books = bookService.findBookById(rq.getBookId());
         CartItem isPresent = cartItemService.isCartItemExist(cart, books, user_id);
         if (isPresent == null) {
             CartItem cartItem = new CartItem();
             cartItem.setBooks(books);
             cartItem.setCart(cart);
             cartItem.setQuantity(rq.getQuantity());
-            cartItem.setUser_id(user_id);
+            cartItem.setUserId(user_id);
 
-            double price = rq.getQuantity()*books.getDiscounted_price();
+            double price = rq.getQuantity()*books.getDiscountedPrice();
             cartItem.setPrice(price);
 
             CartItem createdCartItem = cartItemService.createCartItem(cartItem);
-            cart.getCart_item().add(createdCartItem);
+            cart.getCartItem().add(createdCartItem);
         }
         return "Đã thêm sản phẩm vào giỏ hàng";
     }
@@ -66,15 +66,15 @@ public class CartServiceImpl implements CartService {
         double totalDiscounted_price = 0;
         int total_item = 0;
 
-        for(CartItem cartItem : cart.getCart_item()) {
+        for(CartItem cartItem : cart.getCartItem()) {
             total_price = total_price + cartItem.getPrice();
-            totalDiscounted_price = totalDiscounted_price + cartItem.getDiscounted_price();
+            totalDiscounted_price = totalDiscounted_price + cartItem.getDiscountedPrice();
             total_item = total_item + cartItem.getQuantity();
         }
 
-        cart.setTotal_price(total_price);
-        cart.setTotal_discounted(totalDiscounted_price);
-        cart.setTotal_item(total_item);
+        cart.setTotalPrice(total_price);
+        cart.setTotalDiscounted(totalDiscounted_price);
+        cart.setTotalItem(total_item);
         cart.setDiscounted(total_price - totalDiscounted_price);
 
         return cartRepository.save(cart);

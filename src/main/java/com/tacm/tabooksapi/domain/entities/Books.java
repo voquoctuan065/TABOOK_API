@@ -19,18 +19,21 @@ import lombok.NoArgsConstructor;
 public class Books {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long book_id;
-    @Column(nullable = false)
-    private String book_title;
-    private String book_description;
-    private String book_image;
+    @Column(name = "book_id")
+    private Long bookId;
+    @Column(name = "book_title",nullable = false)
+    private String bookTitle;
+    @Column(name = "book_description")
+    private String bookDescription;
+    @Column(name = "book_image")
+    private String bookImage;
 
     @ManyToOne()
     @JoinColumn(name = "category_id", nullable = false)
     private Categories categories;
 
     @Column(name = "author_name", nullable = false)
-    private String author_name;
+    private String authorName;
 
     @ManyToOne()
     @JoinColumn(name = "nxb_id", nullable = false)
@@ -42,16 +45,30 @@ public class Books {
     @OneToMany(mappedBy = "books", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reviews> reviews = new ArrayList<>();
 
-    private Integer num_rating;
-    @Column(nullable = false)
-    private Integer year_produce;
-    @Column(nullable = false)
-    private Integer stock_quantity;
-    @Column(nullable = false)
-    private Double book_price;
-    private Double discounted_price;
-    private Integer discount_percent;
+    @Column(name = "num_rating")
+    private Integer numRating;
+
+    @Column(name = "year_produce", nullable = false)
+    private Integer yearProduce;
+
+    @Column(name = "stock_quantity", nullable = false)
+    private Integer stockQuantity;
+
+    @Column(name = "book_price", nullable = false)
+    private Double bookPrice;
+
+    @Column(name = "discounted_price")
+    private Double discountedPrice;
+
+    @Column(name = "discount_percent")
+    private Integer discountPercent;
+
+    @Column(name = "hot")
     private boolean hot;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

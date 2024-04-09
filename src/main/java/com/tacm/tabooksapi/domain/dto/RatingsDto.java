@@ -12,6 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RatingsDto {
-    private Long book_id;
+    private Long bookId;
     private double rating;
 }

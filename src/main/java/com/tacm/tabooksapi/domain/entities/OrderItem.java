@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderitem_id;
+    @Column(name = "order_item_id")
+    private Long orderItemId;
 
     @ManyToOne
     @JsonIgnore
@@ -24,9 +25,18 @@ public class OrderItem {
     @ManyToOne
     private Books books;
 
+    @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "price")
     private Double price;
-    private Double discounted_price;
-    private Long user_id;
-    private LocalDateTime delivery_date;
+
+    @Column(name = "discounted_price")
+    private Double discountedPrice;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "delivery_date")
+    private LocalDateTime deliveryDate;
 }

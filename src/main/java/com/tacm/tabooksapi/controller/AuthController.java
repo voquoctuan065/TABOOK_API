@@ -39,7 +39,7 @@ public class AuthController {
     public ResponseEntity<ReqRes> creatUserHandler(@RequestBody Users users) throws  UserException{
         String email = users.getEmail();
         String password = users.getPassword();
-        String full_name = users.getFull_name();
+        String full_name = users.getFullName();
         Users isEmailExist = userRepository.findByEmail(email);
 
         if(isEmailExist != null) {
@@ -49,7 +49,7 @@ public class AuthController {
         Users createdUser = new Users();
         createdUser.setEmail(email);
         createdUser.setPassword(passwordEncoder.encode(password));
-        createdUser.setFull_name(full_name);
+        createdUser.setFullName(full_name);
 
 
         Users savedUser = userRepository.save(createdUser);

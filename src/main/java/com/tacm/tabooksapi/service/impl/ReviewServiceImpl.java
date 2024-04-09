@@ -27,13 +27,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
     @Override
     public Reviews createReview(ReviewsDto reviewsDto, Users users) throws ProductException {
-        Books books = bookService.findBookById(reviewsDto.getBook_id());
+        Books books = bookService.findBookById(reviewsDto.getBookId());
         Reviews reviews = new Reviews();
 
         reviews.setUsers(users);
         reviews.setBooks(books);
         reviews.setReview(reviews.getReview());
-        reviews.setCreated_at(LocalDateTime.now());
+        reviews.setCreatedAt(LocalDateTime.now());
         return reviewRepository.save(reviews);
     }
 

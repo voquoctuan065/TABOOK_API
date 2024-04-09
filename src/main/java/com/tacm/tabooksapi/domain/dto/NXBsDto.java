@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class NXBsDto {
-    private Long nxb_id;
-    private String nxb_name;
-    private String nxb_info;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private Long nxbId;
+    private String nxbName;
+    private String nxbInfo;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

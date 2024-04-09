@@ -24,13 +24,6 @@ public class CategoriesController {
         this.categoriesMapper = categoriesMapper;
     }
 
-    @PostMapping(path = "/add-category")
-    public CategoriesDto createCategories(@RequestBody CategoriesDto categoriesDto) {
-        Categories categories = categoriesMapper.mapFrom(categoriesDto);
-        Categories savedCategories = categoriesService.create(categories);
-        return categoriesMapper.mapTo(savedCategories);
-    }
-
     @GetMapping(path = "/list-category")
     public List<CategoriesDto> listCategories() {
         List<Categories> category = categoriesService.findAll();
