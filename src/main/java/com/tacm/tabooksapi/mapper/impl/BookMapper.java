@@ -1,7 +1,11 @@
 package com.tacm.tabooksapi.mapper.impl;
 
 import com.tacm.tabooksapi.domain.dto.BooksDto;
+import com.tacm.tabooksapi.domain.dto.CategoriesDto;
+import com.tacm.tabooksapi.domain.dto.NXBsDto;
 import com.tacm.tabooksapi.domain.entities.Books;
+import com.tacm.tabooksapi.domain.entities.Categories;
+import com.tacm.tabooksapi.domain.entities.NXBs;
 import com.tacm.tabooksapi.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +19,41 @@ public class BookMapper implements Mapper<Books, BooksDto> {
 
     @Override
     public BooksDto mapTo(Books books) {
-        return modelMapper.map(books, BooksDto.class);
+        BooksDto booksDto = modelMapper.map(books, BooksDto.class);
+        booksDto.setCategory(books.getCategories() != null ?
+                new CategoriesDto(books.getCategories().getCategoryId(), books.getCategories().getCategoryName(),
+                        books.getCategories().getParentCategory(), books.getCategories().getLevel(), books.getCategories().getCreatedAt(),
+                        books.getCategories().getUpdatedAt())
+                : null);
+        booksDto.setNxb(books.getNxbs() != null ?
+                new NXBsDto(books.getNxbs().getNxbId(), books.getNxbs().getNxbName(), books.getNxbs().getNxbInfo(),
+                        books.getNxbs().getCreatedAt(), books.getNxbs().getCreatedAt())
+                : null);
+        return booksDto;
     }
 
     @Override
     public Books mapFrom(BooksDto booksDto) {
-        return modelMapper.map(booksDto, Books.class);
+        Books books = modelMapper.map(booksDto, Books.class);
+        if (booksDto.getCategory() != null) {
+            Categories category = new Categories();
+            category.setCategoryId(booksDto.getCategory().getCategoryId());
+            category.setCategoryName(booksDto.getCategory().getCategoryName());
+            category.setParentCategory(booksDto.getCategory().getParentCategory());
+            category.setLevel(booksDto.getCategory().getLevel());
+            category.setCreatedAt(booksDto.getCategory().getCreatedAt());
+            category.setUpdatedAt(booksDto.getCategory().getUpdatedAt());
+            books.setCategories(category);
+        }
+        if (booksDto.getNxb() != null) {
+            NXBs nxb = new NXBs();
+            nxb.setNxbId(booksDto.getNxb().getNxbId());
+            nxb.setNxbName(booksDto.getNxb().getNxbName());
+            nxb.setNxbInfo(booksDto.getNxb().getNxbInfo());
+            nxb.setCreatedAt(booksDto.getNxb().getCreatedAt());
+            nxb.setUpdatedAt(booksDto.getNxb().getUpdatedAt());
+            books.setNxbs(nxb);
+        }
+        return books;
     }
 }

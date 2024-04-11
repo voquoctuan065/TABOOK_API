@@ -1,6 +1,8 @@
 package com.tacm.tabooksapi.repository;
 
 import com.tacm.tabooksapi.domain.entities.Books;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +29,10 @@ public interface BookRepository extends JpaRepository<Books, Long> {
             @Param("minDiscount") Double minDiscount,
             @Param("sort") String sort
     );
+
+    @Query("SELECT b FROM Books b WHERE LOWER(b.bookTitle) LIKE LOWER(CONCAT(:bookTitle, '%')) OR " +
+            "LOWER(b.bookTitle) LIKE LOWER(:bookTitle) OR " +
+            "LOWER(b.bookTitle) LIKE LOWER(CONCAT('%', :bookTitle)) OR " +
+            "LOWER(b.bookTitle) LIKE LOWER(CONCAT('%', :bookTitle, '%'))")
+    Page<Books> findByBookTitle(@Param("bookTitle") String bookTitle, Pageable pageable);
 }

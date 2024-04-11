@@ -41,23 +41,30 @@ public class CategoriesServiceImpl implements CategoriesService {
         return categoriesRepository.save(categories);
     }
 
+    //--------------------------- Get Page Category ------------------//
     @Override
     public Page<Categories> getAllCategorires(int page, int size) {
         Sort sortInfo = Sort.by(Sort.Direction.DESC, "categoryId");
         Pageable pageable = PageRequest.of(page, size, sortInfo);
         return categoriesRepository.findAll(pageable);
     }
+    //--------------------------- End Page Category ------------------//
 
+    //--------------------------- Search Page Category ------------------//
     @Override
     public Page<Categories> searchCategoriesByName(String category_name, Pageable pageable) {
         return categoriesRepository.findByCategoryNameContainingIgnoreCase(category_name, pageable);
     }
+    //--------------------------- End Search Page Category ------------------//
 
+    //--------------------------- Delete Category By Id ---------------------//
     @Override
     public void deleteById(Long categoryId) {
         categoriesRepository.deleteById(categoryId);
     }
+    //--------------------------- End Delete Category By Id ---------------------//
 
+    //--------------------------- Update Category ---------------------//
     @Override
     public Categories updateCategory(Categories categories, Long categoryId) throws ApiException {
         Categories foundedCategory = findCategoryById(categoryId);
@@ -66,7 +73,9 @@ public class CategoriesServiceImpl implements CategoriesService {
         foundedCategory.setUpdatedAt(LocalDateTime.now());
         return categoriesRepository.save(foundedCategory);
     }
+    //--------------------------- End Update Category ---------------------//
 
+    //--------------------------- Find Category By Id ---------------------//
     @Override
     public Categories findCategoryById(Long categoryId) throws ApiException {
         Optional<Categories> categories = categoriesRepository.findById(categoryId);
@@ -75,4 +84,5 @@ public class CategoriesServiceImpl implements CategoriesService {
         }
         throw new ApiException("Không tìm thấy thể loại với id + " + categoryId, HttpStatus.NOT_FOUND);
     }
+    //--------------------------- End Find Category By Id ---------------------//
 }

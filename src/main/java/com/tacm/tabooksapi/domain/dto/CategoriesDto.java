@@ -17,7 +17,6 @@ public class CategoriesDto {
     private String categoryName;
     private Categories parentCategory;
     private Integer level;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

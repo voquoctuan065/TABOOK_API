@@ -40,10 +40,6 @@ public class BookController {
         Books books = bookService.findBookById(book_id);
         return new ResponseEntity<>(books, HttpStatus.ACCEPTED);
     }
-
-    public ResponseEntity<List<Books>> searchBookHandler(@RequestParam String q) {
-        List<Books> books = bookService.searchBook(q);
-        return new ResponseEntity<>(books, HttpStatus.OK);
-    }
+    
 
 }

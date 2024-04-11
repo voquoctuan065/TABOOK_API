@@ -1,12 +1,16 @@
 package com.tacm.tabooksapi.controller;
 
-import com.tacm.tabooksapi.domain.dto.ApiResponse;
-import com.tacm.tabooksapi.domain.dto.CategoriesDto;
-import com.tacm.tabooksapi.domain.dto.CategoriesPageDto;
+import com.tacm.tabooksapi.domain.dto.*;
+import com.tacm.tabooksapi.domain.entities.Books;
 import com.tacm.tabooksapi.domain.entities.Categories;
+import com.tacm.tabooksapi.domain.entities.NXBs;
 import com.tacm.tabooksapi.exception.ApiException;
+import com.tacm.tabooksapi.mapper.impl.BookMapper;
 import com.tacm.tabooksapi.mapper.impl.CategoriesMapper;
+import com.tacm.tabooksapi.mapper.impl.NXBsMapper;
+import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.CategoriesService;
+import com.tacm.tabooksapi.service.NXBsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,12 +31,24 @@ import java.util.stream.Collectors;
 public class AdminController {
     private CategoriesService categoriesService;
     private CategoriesMapper categoriesMapper;
+    private BookService bookService;
+    private BookMapper bookMapper;
+    private NXBsMapper nxbMapper;
+    private NXBsService nxbService;
     @Autowired
-    public AdminController(CategoriesService categoriesService, CategoriesMapper categoriesMapper) {
+    public AdminController(CategoriesService categoriesService, CategoriesMapper categoriesMapper,
+                           BookService bookService, BookMapper bookMapper,
+                           NXBsMapper nxbMapper, NXBsService nxbService) {
         this.categoriesService = categoriesService;
         this.categoriesMapper = categoriesMapper;
+        this.bookService = bookService;
+        this.bookMapper = bookMapper;
+        this.nxbMapper = nxbMapper;
+        this.nxbService = nxbService;
     }
 
+
+    //------------------------------------------------- Category ------------------------------------------------//
     @GetMapping("/category")
     public CategoriesPageDto getAllCategories(
             @RequestParam(defaultValue = "0") int page,
@@ -85,4 +101,41 @@ public class AdminController {
 
         return new ResponseEntity<>(categoriesMapper.mapTo(updatedCategories), HttpStatus.CREATED);
     }
+    //------------------------------------------------- End Category ------------------------------------------------//
+
+    //------------------------------------------------- Book ------------------------------------------------//
+    @GetMapping("/book")
+    public BooksPageDto getPageBook(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<Books> booksPage = bookService.getPageBook(page, size);
+        List<BooksDto> booksDtoList = booksPage.getContent().stream().map(bookMapper::mapTo).collect(Collectors.toList());
+        int totalPages = booksPage.getTotalPages();
+
+        return new BooksPageDto(booksDtoList, totalPages);
+    }
+
+    @GetMapping("/book/search")
+    public BooksPageDto searchBookByName(@RequestParam String keyword,
+                                                    @RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        Page<Books> booksPage =  bookService.searchBookByName(keyword, PageRequest.of(page, size));
+        List<BooksDto> booksDtoList = booksPage.getContent().stream().map(bookMapper::mapTo).collect(Collectors.toList());
+        int totalPages = booksPage.getTotalPages();
+        return new BooksPageDto(booksDtoList, totalPages);
+    }
+
+    public
+
+
+    //------------------------------------------------- End Book ------------------------------------------------//
+
+    //------------------------------------------------- NXBs ------------------------------------------------//
+    @GetMapping(path = "/nxb/list-nxb")
+    public List<NXBsDto> getListNXBs() {
+        List<NXBs> nxbList = nxbService.findAll();
+        return nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
+    }
+    //------------------------------------------------- End NXBs ------------------------------------------------//
 }

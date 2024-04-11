@@ -8,10 +8,7 @@ import com.tacm.tabooksapi.repository.CategoriesRepository;
 import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -104,8 +101,22 @@ public class BookServiceImpl implements BookService {
         return filteredBooks;
     }
 
+    //------------------------------- Get Page Book -------------------------------------//
     @Override
-    public List<Books> searchBook(String q) {
-         return null;
+    public Page<Books> getPageBook(int page, int size) {
+        Sort sortInfo = Sort.by(Sort.Direction.DESC, "bookId");
+        Pageable pageable = PageRequest.of(page, size, sortInfo);
+        return bookRepository.findAll(pageable);
     }
+    //------------------------------- End Get Page Book -------------------------------------//
+
+    //------------------------------- Search Book By Name -------------------------------------//
+
+    @Override
+    public Page<Books> searchBookByName(String bookTitle, Pageable pageable) {
+        return bookRepository.findByBookTitle(bookTitle, pageable);
+    }
+
+    //------------------------------- End Search Book By Name -------------------------------------//
+
 }
