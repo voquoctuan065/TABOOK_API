@@ -10,19 +10,22 @@ import com.tacm.tabooksapi.mapper.impl.CategoriesMapper;
 import com.tacm.tabooksapi.mapper.impl.NXBsMapper;
 import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.CategoriesService;
+import com.tacm.tabooksapi.service.ImageService;
 import com.tacm.tabooksapi.service.NXBsService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,16 +38,20 @@ public class AdminController {
     private BookMapper bookMapper;
     private NXBsMapper nxbMapper;
     private NXBsService nxbService;
+
+    private ImageService imageService;
     @Autowired
     public AdminController(CategoriesService categoriesService, CategoriesMapper categoriesMapper,
                            BookService bookService, BookMapper bookMapper,
-                           NXBsMapper nxbMapper, NXBsService nxbService) {
+                           NXBsMapper nxbMapper, NXBsService nxbService,
+                           ImageService imageService) {
         this.categoriesService = categoriesService;
         this.categoriesMapper = categoriesMapper;
         this.bookService = bookService;
         this.bookMapper = bookMapper;
         this.nxbMapper = nxbMapper;
         this.nxbService = nxbService;
+        this.imageService = imageService;
     }
 
 
@@ -104,6 +111,18 @@ public class AdminController {
     //------------------------------------------------- End Category ------------------------------------------------//
 
     //------------------------------------------------- Book ------------------------------------------------//
+
+    @PostMapping("/book/add")
+    public ResponseEntity<BooksDto> addNewBook(@Valid @RequestBody BooksDto booksDto) throws  ApiException {
+        try {
+            Books books = bookMapper.mapFrom(booksDto);
+            Books savedBook = bookService.addBook(books);
+            return new ResponseEntity<>(bookMapper.mapTo(savedBook), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/book")
     public BooksPageDto getPageBook(
             @RequestParam(defaultValue = "0") int page,
@@ -126,9 +145,6 @@ public class AdminController {
         return new BooksPageDto(booksDtoList, totalPages);
     }
 
-    public
-
-
     //------------------------------------------------- End Book ------------------------------------------------//
 
     //------------------------------------------------- NXBs ------------------------------------------------//
@@ -138,4 +154,19 @@ public class AdminController {
         return nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
     }
     //------------------------------------------------- End NXBs ------------------------------------------------//
+
+    //-------------------------------------------- Upload Image To Drive --------------------------------------//
+    @PostMapping("/uploadToGoogleDrive")
+    public Object handleFileUpload(@RequestParam ("image") MultipartFile file) throws IOException, GeneralSecurityException {
+        if(file.isEmpty()) {
+            return "File is empty";
+        }
+        File tempFile = File.createTempFile("temp", null);
+        file.transferTo(tempFile);
+        ImageRes imageRes = imageService.uploadImageToDrive(tempFile);
+        System.out.println(imageRes);
+        return imageRes;
+    }
+    //-------------------------------------------- End Upload Image To Drive --------------------------------------//
+
 }

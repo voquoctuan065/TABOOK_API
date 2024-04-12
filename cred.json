@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "tabook-420104",
+  "private_key_id": "7ebadd690dfdb7f9ed6a98f74e470441f20f8bc8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCs/2+CgpiVCdU0\nknzK8MpxJmaS3qx7+zqWs44Q5zusmQ9IgZIgjR/yCe6ESzKSqAluXZ+HPgOiuarc\n9du8A2yj9wxe3rvWWC8HgtuD3HpoJaHgb7+Jxv2llrMUKdUNNask0FkVId8CGR8R\nBb2Dl577vjUSZBKNvC5lk3A+C3mpNQLHuCOhwT+MibSiGcjOESPn0sHen79305mP\nXDUViRAWYTb0KzovupvtBfe098MFX6f6LZ8637kstTX+EOaHK42K56SmWU9K0Vfz\nA5ltVxxyx2/slK/zxO6OSu/ksvly2VDzy+ll+aHUA7n4f/Wwo1F7CdujGKBQgk52\ncM1cAUWjAgMBAAECggEAA1yhr/lxcMdv/s6LqpHwxAr//wHOxSO81rwG0SohxAa/\nJJJIB2YyHAPdG7sJzCCosbA4XLNz9KJMeCekGxWrGBd4hIAFk04M0+plg6qfncPu\nmBnPQzbg4rNUA0hw0+VRPfYLsI8DO22iZ6HZ7NEpDVXpo4ral7vzu3ArDTmdSqKb\nBZHUUUJW5JWN/l8CKlNQKU//vbCWm+aqDYAbLK6O8y2ufSJ4aCnviKc9eUNBx07w\n/NWuOKt/usKnPPgr3PMhZ7nWGvxcvcGUfU8/zf69mPTM6Z4f7k0N/o6NMsw/2VBx\nAn5jeTUatFsfUpfE2BVpG10IoIeT4X3ikTyC+nZZ0QKBgQDlL+NyH/TIRH0WLNXU\nQuaXNxG6ab7IodaGAW706isNwr+2y+tbwMb530H8x+FbUMvxNzJnnw13zRFdlqNt\nWCkcG20jP1giFA3peAhOwFkNZrv5vy75njf5OP+Xd4FYoAFkoN0FWnaOPzL/2LXb\n1OQX9AjV+/umn7ACTD8Mhxk7KQKBgQDBPLBGo2hVJ2VSANK1L+0zhHiRnNeZq4yi\nnILWn+Q+G65Cg1ClE122RBy+UjiC0G4YJxfklCcsY0RzxioVK+F+CrIL9l+8FETN\nuULMpq4jjbO7pICYPaImBuCD1PCLHbuhavloRozUK7jfHBhvhKFDxE/2m3/nh0nM\n2A09v/4f6wKBgQCS8lV+wwaLsX4STcT8R7jZk7GGOG7e7QVC/oBKACqCtC9/4NeT\nCNOLOp5wmSfhCLj6fE2RKuXTvmQ4AXHflfslzl/3jZHQp9MTsqaA98shUJGN3Ase\neVeiL+2RDEqerFi4UHvmBs6k/diROj3AKYvl384ahWogt5p+nqx+N9DxoQKBgDmF\nCyO7uG7Aj1RdklsErSLMp+cQPM0tV2uAEyI37gTe0HxUAklg/mAm3jd42gF2cY8W\n8/HCd/aqhdHAhv5OVYzjOiR9bfnaPrDOGKg6ZVOH9pxAV1b54a5YFbSoSgHfE970\nrNDxTzJI4XroLg3j+OznHrZVizkr+DfVh/t9jvOJAoGBAI9CUUbpU2BlYfu4nJo3\nzDE42zoZ0Njq0xgNQa9pCzlJ+/JO/z5HEKHKUIwdZ2z9nt2mjirZXaR+Z45U8LbD\nRzL8bQWxA8FbuFG+HFmCSFxdssdsKdnCRF28pl8SIyeLa6qWHPTv6u+YjFfwx0YJ\n23UISTb7qfBSlSEMmH9FToxl\n-----END PRIVATE KEY-----\n",
+  "client_email": "tabookdriveupload@tabook-420104.iam.gserviceaccount.com",
+  "client_id": "102567124365156265812",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tabookdriveupload%40tabook-420104.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

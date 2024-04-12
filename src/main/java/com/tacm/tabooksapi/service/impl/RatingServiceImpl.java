@@ -28,14 +28,15 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public Ratings createRating(RatingsDto ratingDto, Users users) throws ProductException {
-        Books books = bookService.findBookById(ratingDto.getBookId());
-        Ratings ratings = new Ratings();
-        ratings.setBooks(books);
-        ratings.setRating(ratingDto.getRating());
-        ratings.setUsers(users);
-        ratings.setCreatedAt(LocalDateTime.now());
-
-        return ratingRepository.save(ratings);
+//        Books books = bookService.findBookById(ratingDto.getBookId());
+//        Ratings ratings = new Ratings();
+//        ratings.setBooks(books);
+//        ratings.setRating(ratingDto.getRating());
+//        ratings.setUsers(users);
+//        ratings.setCreatedAt(LocalDateTime.now());
+//
+//        return ratingRepository.save(ratings);
+    return null;
     }
 
     @Override

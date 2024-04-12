@@ -39,24 +39,25 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String addCartItem(Long user_id, AddItemRequest rq) throws ProductException {
-        Cart cart = cartRepository.findByUserId(user_id);
-
-        Books books = bookService.findBookById(rq.getBookId());
-        CartItem isPresent = cartItemService.isCartItemExist(cart, books, user_id);
-        if (isPresent == null) {
-            CartItem cartItem = new CartItem();
-            cartItem.setBooks(books);
-            cartItem.setCart(cart);
-            cartItem.setQuantity(rq.getQuantity());
-            cartItem.setUserId(user_id);
-
-            double price = rq.getQuantity()*books.getDiscountedPrice();
-            cartItem.setPrice(price);
-
-            CartItem createdCartItem = cartItemService.createCartItem(cartItem);
-            cart.getCartItem().add(createdCartItem);
-        }
-        return "Đã thêm sản phẩm vào giỏ hàng";
+//        Cart cart = cartRepository.findByUserId(user_id);
+//
+//        Books books = bookService.findBookById(rq.getBookId());
+//        CartItem isPresent = cartItemService.isCartItemExist(cart, books, user_id);
+//        if (isPresent == null) {
+//            CartItem cartItem = new CartItem();
+//            cartItem.setBooks(books);
+//            cartItem.setCart(cart);
+//            cartItem.setQuantity(rq.getQuantity());
+//            cartItem.setUserId(user_id);
+//
+//            double price = rq.getQuantity()*books.getDiscountedPrice();
+//            cartItem.setPrice(price);
+//
+//            CartItem createdCartItem = cartItemService.createCartItem(cartItem);
+//            cart.getCartItem().add(createdCartItem);
+//        }
+//        return "Đã thêm sản phẩm vào giỏ hàng";
+    return null;
     }
 
     @Override

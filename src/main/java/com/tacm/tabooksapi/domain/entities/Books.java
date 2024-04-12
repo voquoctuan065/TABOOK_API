@@ -1,9 +1,9 @@
 package com.tacm.tabooksapi.domain.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,11 +21,14 @@ public class Books {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     private Long bookId;
+
     @Column(name = "book_title",nullable = false)
     private String bookTitle;
+
     @Column(name = "book_description")
     private String bookDescription;
-    @Column(name = "book_image")
+
+    @Column(name="book_image")
     private String bookImage;
 
     @ManyToOne()
