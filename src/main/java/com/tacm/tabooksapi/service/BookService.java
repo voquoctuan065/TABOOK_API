@@ -17,27 +17,28 @@ import java.util.Optional;
 public interface BookService {
 
 //    Books createBook(Books books);
-//
+
 //    List<Books> findAll();
-//
+
 //    Optional<Books> findOne(Long id);
-//
+
 //    boolean isExists(Long id);
-//
+
 //    void delete(Long id) throws ProductException;
-//
+
 //    Books updateBook(Long id, Books books) throws ProductException;
-//
-//    Books findBookById(Long id) throws ProductException;
-//
+
+    Books findBookById(Long id) throws ProductException;
 //    List<Books> findBookByCategory(String category);
-//
 //    Page<Books> getAllBook(String category, Double minPrice, Double maxPrice, Double minDiscount
 //    , String sort, String stock, Integer pageNumber, Integer pageSize);
-//
     Page<Books> getPageBook(int page, int size);
 
     Page<Books> searchBookByName(String bookTitle, Pageable pageable);
 
     Books addBook(Books book) throws ApiException, IOException;
+
+    void deleteBook(Long bookId);
+
+    Books updateBook(Books books, Long bookId) throws ProductException;
 }

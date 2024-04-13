@@ -5,6 +5,7 @@ import com.tacm.tabooksapi.domain.entities.Books;
 import com.tacm.tabooksapi.domain.entities.Categories;
 import com.tacm.tabooksapi.domain.entities.NXBs;
 import com.tacm.tabooksapi.exception.ApiException;
+import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.mapper.impl.BookMapper;
 import com.tacm.tabooksapi.mapper.impl.CategoriesMapper;
 import com.tacm.tabooksapi.mapper.impl.NXBsMapper;
@@ -143,6 +144,37 @@ public class AdminController {
         List<BooksDto> booksDtoList = booksPage.getContent().stream().map(bookMapper::mapTo).collect(Collectors.toList());
         int totalPages = booksPage.getTotalPages();
         return new BooksPageDto(booksDtoList, totalPages);
+    }
+
+    @DeleteMapping(path = "/book/delete/{bookId}")
+    public ResponseEntity<ApiResponse> deleteBook(@PathVariable("bookId") Long bookId) throws ApiException {
+        try {
+            bookService.deleteBook(bookId);
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setMessage("Xoá sách thành công!");
+            apiResponse.setStatus(true);
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PutMapping(path = "/book/update/{bookId}")
+    public ResponseEntity<BooksDto> updateBook(@RequestBody BooksDto booksDto,
+                                                        @PathVariable("bookId") Long bookId)
+            throws ApiException, ProductException {
+        Books books = bookMapper.mapFrom(booksDto);
+        Books updatedBook = bookService.updateBook(books, bookId);
+        return new ResponseEntity<>(bookMapper.mapTo(updatedBook), HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/book/{bookId}")
+    public BooksDto findBookById(@PathVariable("bookId") Long bookId) throws ProductException {
+        try {
+            Books books = bookService.findBookById(bookId);
+            return bookMapper.mapTo(books);
+        } catch (ProductException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //------------------------------------------------- End Book ------------------------------------------------//

@@ -2,6 +2,7 @@ package com.tacm.tabooksapi.service.impl;
 
 import com.tacm.tabooksapi.domain.entities.Books;
 import com.tacm.tabooksapi.exception.ApiException;
+import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.mapper.impl.BookMapper;
 import com.tacm.tabooksapi.repository.BookRepository;
 import com.tacm.tabooksapi.repository.CategoriesRepository;
@@ -72,14 +73,7 @@ public class BookServiceImpl implements BookService {
 //        return bookRepository.save(foundedBook);
 //    }
 //
-//    @Override
-//    public Books findBookById(Long id) throws ProductException {
-//        Optional<Books> books = bookRepository.findById(id);
-//        if(books.isPresent()) {
-//            return books.get();
-//        }
-//        throw new ProductException("Không tìm thấy sách với id - " + id);
-//    }
+
 
 //    @Override
 //    public List<Books> findBookByCategory(String category) {
@@ -106,6 +100,18 @@ public class BookServiceImpl implements BookService {
 //        Page<Books> filteredBooks = new PageImpl<>(pageContent, pageable, books.size());
 //        return filteredBooks;
 //    }
+
+
+    //------------------------------- Find Book By Id -------------------------------------//
+    @Override
+    public Books findBookById(Long id) throws ProductException {
+        Optional<Books> books = bookRepository.findById(id);
+        if(books.isPresent()) {
+            return books.get();
+        }
+        throw new ProductException("Không tìm thấy sách với id - " + id);
+    }
+    //------------------------------- End Find Book By Id -------------------------------------//
 
     //------------------------------- Get Page Book -------------------------------------//
     @Override
@@ -135,5 +141,33 @@ public class BookServiceImpl implements BookService {
     }
 
     //------------------------------- End Add New Book -------------------------------------//
+
+    //------------------------------------ Delete Book -------------------------------------//
+    @Override
+    public void deleteBook(Long bookId) {
+        bookRepository.deleteById(bookId);
+    }
+    //------------------------------------ End Delete Book -------------------------------------//
+
+    //------------------------------------ Update Book -------------------------------------//
+
+    @Override
+    public Books updateBook(Books books, Long bookId) throws ProductException {
+        Books foundedBook = findBookById(bookId);
+        foundedBook.setBookTitle(books.getBookTitle());
+        foundedBook.setBookImage(books.getBookImage());
+        foundedBook.setBookDescription(books.getBookDescription());
+        foundedBook.setAuthorName(books.getAuthorName());
+        foundedBook.setBookPrice(books.getBookPrice());
+        foundedBook.setStockQuantity(books.getStockQuantity());
+        foundedBook.setYearProduce(books.getYearProduce());
+        foundedBook.setHot(books.isHot());
+        foundedBook.setNxbs(books.getNxbs());
+        foundedBook.setCategories(books.getCategories());
+        foundedBook.setUpdatedAt(LocalDateTime.now());
+        return bookRepository.save(foundedBook);
+    }
+
+    //------------------------------------ End Update Book -------------------------------------//
 
 }
