@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Book;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -180,10 +181,64 @@ public class AdminController {
     //------------------------------------------------- End Book ------------------------------------------------//
 
     //------------------------------------------------- NXBs ------------------------------------------------//
+    @PostMapping(path = "/nxb/add")
+    public ResponseEntity<NXBsDto> addNewBook(@RequestBody NXBsDto nxBsDto) throws  ApiException {
+        try {
+            NXBs nxbs = nxbMapper.mapFrom(nxBsDto);
+            NXBs savedNxbs  = nxbService.addNXB(nxbs);
+            return new ResponseEntity<>(nxbMapper.mapTo(savedNxbs), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(path = "/nxb/list-nxb")
     public List<NXBsDto> getListNXBs() {
         List<NXBs> nxbList = nxbService.findAll();
         return nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/nxb/search")
+    public ResponseEntity<List<NXBsDto>> searchNxbByName (@RequestParam String keyword) {
+        List<NXBs> nxbList = nxbService.searchNxbByName(keyword);
+        List<NXBsDto> nxBsDtoList = nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
+        return ResponseEntity.ok(nxBsDtoList);
+    }
+
+    @PutMapping(path = "/nxb/update/{nxbId}")
+    public ResponseEntity<NXBsDto> updateNXB(@RequestBody NXBsDto nxBsDto,
+                                               @PathVariable("nxbId") Long nxbId)
+            throws ApiException {
+        try {
+            NXBs nxbs = nxbMapper.mapFrom(nxBsDto);
+            NXBs savedNxbs = nxbService.updateNXB(nxbs, nxbId);
+            return new ResponseEntity<>(nxbMapper.mapTo(savedNxbs), HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping(path = "/nxb/delete/{nxbId}")
+    public ResponseEntity<ApiResponse> deleteNXB(@PathVariable("nxbId") Long nxbId) throws ApiException {
+        try {
+            nxbService.deleteNXB(nxbId);
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setMessage("Xoá nhà xuất bản thành công!");
+            apiResponse.setStatus(true);
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(path = "/nxb/{nxbId}")
+    public NXBsDto findNxbById(@PathVariable("nxbId") Long nxbId)  {
+        try {
+            NXBs nxBs = nxbService.findNxbById(nxbId);
+            return nxbMapper.mapTo(nxBs);
+        } catch ( ApiException e) {
+            throw new RuntimeException(e);
+        }
     }
     //------------------------------------------------- End NXBs ------------------------------------------------//
 
