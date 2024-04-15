@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/category")
+@RequestMapping("/public/category")
 public class CategoriesController {
     private CategoriesService categoriesService;
     private CategoriesMapper categoriesMapper;
@@ -28,5 +28,11 @@ public class CategoriesController {
     public List<CategoriesDto> listCategories() {
         List<Categories> category = categoriesService.findAll();
         return category.stream().map(categoriesMapper::mapTo).collect(Collectors.toList());
+    }
+
+    @GetMapping("/level1")
+    public List<CategoriesDto> getLevelOneAndChildren() {
+        List<Categories> categories = categoriesService.getLevelOneAndChildren();
+        return categories.stream().map(categoriesMapper::mapTo).collect(Collectors.toList());
     }
 }

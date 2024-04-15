@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,6 +60,7 @@ public class AdminController {
 
     //------------------------------------------------- Category ------------------------------------------------//
     @GetMapping("/category")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public CategoriesPageDto getAllCategories(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -71,6 +73,7 @@ public class AdminController {
     }
 
     @GetMapping("/category/search")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public CategoriesPageDto searchCategoriesByName(@RequestParam String keyword,
                                                     @RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "10") int size) {
@@ -81,6 +84,7 @@ public class AdminController {
     }
 
     @PostMapping(path = "/category/add-category")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public CategoriesDto createCategories(@RequestBody CategoriesDto categoriesDto) {
         Categories categories = categoriesMapper.mapFrom(categoriesDto);
         Categories savedCategories = categoriesService.create(categories);
@@ -88,12 +92,14 @@ public class AdminController {
     }
 
     @GetMapping(path = "/category/list-category")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<CategoriesDto> listCategories() {
         List<Categories> category = categoriesService.findAll();
         return category.stream().map(categoriesMapper::mapTo).collect(Collectors.toList());
     }
 
     @DeleteMapping(path = "/category/delete/{categoryId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse> deleteCategories(@PathVariable("categoryId") Long categoryId){
         categoriesService.deleteById(categoryId);
         ApiResponse res = new ApiResponse();
@@ -103,6 +109,7 @@ public class AdminController {
     }
 
     @PutMapping(path = "/category/update/{categoryId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CategoriesDto> updateCategory(@RequestBody CategoriesDto categoriesDto,
                                                      @PathVariable("categoryId") Long categoryId) throws ApiException {
         Categories categories = categoriesMapper.mapFrom(categoriesDto);
@@ -115,6 +122,7 @@ public class AdminController {
     //------------------------------------------------- Book ------------------------------------------------//
 
     @PostMapping("/book/add")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BooksDto> addNewBook(@Valid @RequestBody BooksDto booksDto) throws  ApiException {
         try {
             Books books = bookMapper.mapFrom(booksDto);
@@ -126,6 +134,7 @@ public class AdminController {
     }
 
     @GetMapping("/book")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public BooksPageDto getPageBook(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -138,6 +147,7 @@ public class AdminController {
     }
 
     @GetMapping("/book/search")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public BooksPageDto searchBookByName(@RequestParam String keyword,
                                                     @RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "10") int size) {
@@ -148,6 +158,7 @@ public class AdminController {
     }
 
     @DeleteMapping(path = "/book/delete/{bookId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse> deleteBook(@PathVariable("bookId") Long bookId) throws ApiException {
         try {
             bookService.deleteBook(bookId);
@@ -160,6 +171,7 @@ public class AdminController {
         }
     }
     @PutMapping(path = "/book/update/{bookId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BooksDto> updateBook(@RequestBody BooksDto booksDto,
                                                         @PathVariable("bookId") Long bookId)
             throws ApiException, ProductException {
@@ -169,6 +181,7 @@ public class AdminController {
     }
 
     @GetMapping(path = "/book/{bookId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public BooksDto findBookById(@PathVariable("bookId") Long bookId) throws ProductException {
         try {
             Books books = bookService.findBookById(bookId);
@@ -182,6 +195,7 @@ public class AdminController {
 
     //------------------------------------------------- NXBs ------------------------------------------------//
     @PostMapping(path = "/nxb/add")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<NXBsDto> addNewBook(@RequestBody NXBsDto nxBsDto) throws  ApiException {
         try {
             NXBs nxbs = nxbMapper.mapFrom(nxBsDto);
@@ -193,12 +207,14 @@ public class AdminController {
     }
 
     @GetMapping(path = "/nxb/list-nxb")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<NXBsDto> getListNXBs() {
         List<NXBs> nxbList = nxbService.findAll();
         return nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
     }
 
     @GetMapping(path = "/nxb/search")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<NXBsDto>> searchNxbByName (@RequestParam String keyword) {
         List<NXBs> nxbList = nxbService.searchNxbByName(keyword);
         List<NXBsDto> nxBsDtoList = nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
@@ -206,6 +222,7 @@ public class AdminController {
     }
 
     @PutMapping(path = "/nxb/update/{nxbId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<NXBsDto> updateNXB(@RequestBody NXBsDto nxBsDto,
                                                @PathVariable("nxbId") Long nxbId)
             throws ApiException {
@@ -219,6 +236,7 @@ public class AdminController {
     }
 
     @DeleteMapping(path = "/nxb/delete/{nxbId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse> deleteNXB(@PathVariable("nxbId") Long nxbId) throws ApiException {
         try {
             nxbService.deleteNXB(nxbId);
@@ -232,6 +250,7 @@ public class AdminController {
     }
 
     @GetMapping(path = "/nxb/{nxbId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public NXBsDto findNxbById(@PathVariable("nxbId") Long nxbId)  {
         try {
             NXBs nxBs = nxbService.findNxbById(nxbId);

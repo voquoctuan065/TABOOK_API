@@ -17,4 +17,6 @@ public interface CategoriesRepository extends JpaRepository<Categories, Long> {
             "LOWER(c.categoryName) LIKE LOWER(CONCAT('%', :keyword)) OR " +
             "LOWER(c.categoryName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Categories> findByCategoryNameContainingIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
+
+    List<Categories> findByParentCategoryIsNull();
 }

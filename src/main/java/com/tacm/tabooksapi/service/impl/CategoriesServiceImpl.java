@@ -1,7 +1,9 @@
 package com.tacm.tabooksapi.service.impl;
 
+import com.tacm.tabooksapi.domain.dto.CategoriesDto;
 import com.tacm.tabooksapi.domain.entities.Categories;
 import com.tacm.tabooksapi.exception.ApiException;
+import com.tacm.tabooksapi.mapper.impl.CategoriesMapper;
 import com.tacm.tabooksapi.repository.CategoriesRepository;
 import com.tacm.tabooksapi.service.CategoriesService;
 import org.modelmapper.ModelMapper;
@@ -27,6 +29,13 @@ public class CategoriesServiceImpl implements CategoriesService {
     @Autowired
     public CategoriesServiceImpl(CategoriesRepository categoriesRepository, ModelMapper modelMapper) {
         this.categoriesRepository = categoriesRepository;
+    }
+
+    @Autowired
+    private CategoriesMapper categoriesMapper;
+
+    public List<Categories> getLevelOneAndChildren() {
+        return StreamSupport.stream(categoriesRepository.findByParentCategoryIsNull().spliterator(), false).collect(Collectors.toList());
     }
 
     @Override
@@ -85,4 +94,7 @@ public class CategoriesServiceImpl implements CategoriesService {
         throw new ApiException("Không tìm thấy thể loại với id + " + categoryId, HttpStatus.NOT_FOUND);
     }
     //--------------------------- End Find Category By Id ---------------------//
+
+
+
 }

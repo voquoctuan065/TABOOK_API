@@ -1,5 +1,6 @@
 package com.tacm.tabooksapi.service;
 
+import com.tacm.tabooksapi.domain.dto.CategoriesDto;
 import com.tacm.tabooksapi.domain.entities.Categories;
 import com.tacm.tabooksapi.exception.ApiException;
 import org.springframework.data.domain.Page;
@@ -22,4 +23,6 @@ public interface CategoriesService {
     Categories updateCategory(Categories categories, Long categoryId) throws ApiException;
 
     Categories findCategoryById(Long categoryId) throws ApiException;
+
+    public List<Categories> getLevelOneAndChildren();
 }

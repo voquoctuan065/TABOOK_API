@@ -1,7 +1,11 @@
 package com.tacm.tabooksapi.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Builder
+@JsonIgnoreProperties({"parentCategory", "books"})
 public class Categories {
 
     @Id
@@ -22,9 +27,16 @@ public class Categories {
     @Column(name = "category_name", nullable = false)
     private String categoryName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
     private Categories parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Categories> children = new ArrayList<>();
+
+    @OneToMany(mappedBy = "categories", cascade = CascadeType.ALL)
+    private List<Books> books = new ArrayList<>();
 
     @Column(name = "level")
     private Integer level;

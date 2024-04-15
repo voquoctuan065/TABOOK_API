@@ -3,6 +3,7 @@ package com.tacm.tabooksapi.controller;
 import com.tacm.tabooksapi.config.JwtProvider;
 import com.tacm.tabooksapi.domain.dto.LoginRequest;
 import com.tacm.tabooksapi.domain.entities.Users;
+import com.tacm.tabooksapi.exception.ApiException;
 import com.tacm.tabooksapi.exception.UserException;
 import com.tacm.tabooksapi.repository.UserRepository;
 import com.tacm.tabooksapi.service.impl.UserServiceImpl;
@@ -36,21 +37,21 @@ public class AuthController {
         this.userServiceImpl = userServiceImpl;
     }
     @PostMapping("/signup")
-    public ResponseEntity<ReqRes> creatUserHandler(@RequestBody Users users) throws  UserException{
+    public ResponseEntity<ReqRes> creatUserHandler(@RequestBody Users users) throws ApiException {
         String email = users.getEmail();
         String password = users.getPassword();
         String full_name = users.getFullName();
         Users isEmailExist = userRepository.findByEmail(email);
 
         if(isEmailExist != null) {
-            throw new UserException("Email have already used with another account");
+            throw new ApiException("Email have already used with another account", HttpStatus.BAD_REQUEST);
         }
 
         Users createdUser = new Users();
         createdUser.setEmail(email);
         createdUser.setPassword(passwordEncoder.encode(password));
         createdUser.setFullName(full_name);
-
+        createdUser.setRole("USER");
 
         Users savedUser = userRepository.save(createdUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(), savedUser.getPassword());

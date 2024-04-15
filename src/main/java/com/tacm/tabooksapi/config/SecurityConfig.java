@@ -32,10 +32,16 @@ public class SecurityConfig {
     @SuppressWarnings("deprecation")
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        //request -> request.requestMatchers("/api/**", "/admin/**").authenticated().anyRequest().permitAll()
+
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
 		        .cors(Customizer.withDefaults())
-                .authorizeRequests(request -> request.requestMatchers("/api/**").authenticated().anyRequest().permitAll())
+                .authorizeRequests(
+                        request -> request
+                                .requestMatchers("/api/**", "/admin/**").authenticated()
+                                .anyRequest().permitAll()
+                )
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthFilter(), BasicAuthenticationFilter.class)
                 .build();
