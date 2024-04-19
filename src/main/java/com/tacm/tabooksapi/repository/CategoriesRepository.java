@@ -19,4 +19,7 @@ public interface CategoriesRepository extends JpaRepository<Categories, Long> {
     Page<Categories> findByCategoryNameContainingIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
 
     List<Categories> findByParentCategoryIsNull();
+
+
+    Categories findByPathName(String pathName);
 }

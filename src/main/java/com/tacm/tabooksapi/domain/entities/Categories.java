@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Builder
-@JsonIgnoreProperties({"parentCategory", "books"})
+@JsonIgnoreProperties({"parentCategory"})
 public class Categories {
 
     @Id
@@ -35,8 +36,8 @@ public class Categories {
     @JsonManagedReference
     private List<Categories> children = new ArrayList<>();
 
-    @OneToMany(mappedBy = "categories", cascade = CascadeType.ALL)
-    private List<Books> books = new ArrayList<>();
+    @Column(name = "path_name")
+    private String pathName;
 
     @Column(name = "level")
     private Integer level;

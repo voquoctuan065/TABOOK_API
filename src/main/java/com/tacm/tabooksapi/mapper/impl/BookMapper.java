@@ -21,8 +21,12 @@ public class BookMapper implements Mapper<Books, BooksDto> {
     public BooksDto mapTo(Books books) {
         BooksDto booksDto = modelMapper.map(books, BooksDto.class);
         booksDto.setCategory(books.getCategories() != null ?
-                new CategoriesDto(books.getCategories().getCategoryId(), books.getCategories().getCategoryName(),
-                        books.getCategories().getParentCategory(), books.getCategories().getChildren(), books.getCategories().getBooks(),books.getCategories().getLevel(), books.getCategories().getCreatedAt(),
+                new CategoriesDto(books.getCategories().getCategoryId(),
+                        books.getCategories().getCategoryName(),
+                        null,
+                        null,
+                        books.getCategories().getPathName(),
+                        books.getCategories().getLevel(), books.getCategories().getCreatedAt(),
                         books.getCategories().getUpdatedAt())
                 : null);
         booksDto.setNxb(books.getNxbs() != null ?
@@ -39,9 +43,8 @@ public class BookMapper implements Mapper<Books, BooksDto> {
             Categories category = new Categories();
             category.setCategoryId(booksDto.getCategory().getCategoryId());
             category.setCategoryName(booksDto.getCategory().getCategoryName());
-            category.setParentCategory(booksDto.getCategory().getParentCategory());
-            category.setChildren(booksDto.getCategory().getChildren());
-            category.setBooks(booksDto.getCategory().getBooks());
+            
+            category.setPathName(booksDto.getCategory().getPathName());
             category.setLevel(booksDto.getCategory().getLevel());
             category.setCreatedAt(booksDto.getCategory().getCreatedAt());
             category.setUpdatedAt(booksDto.getCategory().getUpdatedAt());

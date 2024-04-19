@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Builder
+@JsonSerialize
 public class Books {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +36,9 @@ public class Books {
     @Column(name="book_image")
     private String bookImage;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonManagedReference
+    @JsonIgnoreProperties("books")
     private Categories categories;
 
     @Column(name = "author_name", nullable = false)

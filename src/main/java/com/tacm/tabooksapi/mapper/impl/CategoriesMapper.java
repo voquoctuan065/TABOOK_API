@@ -22,7 +22,8 @@ public class CategoriesMapper implements Mapper<Categories, CategoriesDto> {
         this.modelMapper = modelMapper;
     }
 
-    public CategoriesDto mapTo(Categories category) { return modelMapper.map(category, CategoriesDto.class);
+    public CategoriesDto mapTo(Categories category) {
+        return modelMapper.map(category, CategoriesDto.class);
     }
 
     public Categories mapFrom(CategoriesDto categoriesDto) {

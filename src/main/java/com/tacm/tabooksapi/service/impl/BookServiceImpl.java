@@ -1,6 +1,7 @@
 package com.tacm.tabooksapi.service.impl;
 
 import com.tacm.tabooksapi.domain.entities.Books;
+import com.tacm.tabooksapi.domain.entities.Categories;
 import com.tacm.tabooksapi.exception.ApiException;
 import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.mapper.impl.BookMapper;
@@ -9,16 +10,17 @@ import com.tacm.tabooksapi.repository.CategoriesRepository;
 import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -80,26 +82,26 @@ public class BookServiceImpl implements BookService {
 //        return null;
 //    }
 //
-//    @Override
-//    public Page<Books> getAllBook(String category, Double minPrice, Double maxPrice, Double minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-//        List<Books> books = bookRepository.filterBook(category, minPrice, maxPrice, minDiscount, sort);
-//
-//        if (stock != null) {
-//            if(stock.equals("in_stock")) {
-//                books = books.stream().filter(b -> b.getStockQuantity()>0).collect(Collectors.toList());
-//            }
-//            else if(stock.equals("out_of_stock")) {
-//                books = books.stream().filter(b -> b.getStockQuantity()<1).collect(Collectors.toList());
-//            }
-//        }
-//        int startIndex = (int)pageable.getOffset();
-//        int endIndex = Math.min(startIndex + pageable.getPageSize(), books.size());
-//
-//        List<Books> pageContent = books.subList(startIndex, endIndex);
-//        Page<Books> filteredBooks = new PageImpl<>(pageContent, pageable, books.size());
-//        return filteredBooks;
-//    }
+    @Override
+    public Page<Books> filterBooks(String pathName, Double minPrice, Double maxPrice, Long nxbId, String sort, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        List<Books> books ;
+        if(nxbId != null) {
+            books = bookRepository.filterBook(pathName,  minPrice, maxPrice, nxbId, sort);
+        } else {
+            books = bookRepository.filterBook(pathName,  minPrice, maxPrice, sort);
+        }
+        int startIndex = (int)pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), books.size());
+
+        if (startIndex >= books.size()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, 0);
+        }
+
+        List<Books> pageContent = books.subList(startIndex, endIndex);
+        Page<Books> filteredBooks = new PageImpl<>(pageContent, pageable, books.size());
+        return filteredBooks;
+    }
 
 
     //------------------------------- Find Book By Id -------------------------------------//
@@ -170,4 +172,18 @@ public class BookServiceImpl implements BookService {
 
     //------------------------------------ End Update Book -------------------------------------//
 
+    //-------------------------------------- Get Book By Category Path Name ------------------------------------//
+
+    @Override
+    public Page<Books> getBookByPathName(String pathName, int page, int size) throws ApiException {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return bookRepository.findByCategoriesPathName(pathName, pageable);
+    }
+    //-------------------------------------- End Get Book By Category Path Name ---------------------------------//
+
+    @Override
+    public List<Books> findAll() {
+        return StreamSupport.stream(bookRepository.findAll().spliterator(), false).collect(Collectors.toList());
+    }
 }

@@ -30,8 +30,9 @@ public interface BookService {
 
     Books findBookById(Long id) throws ProductException;
 //    List<Books> findBookByCategory(String category);
-//    Page<Books> getAllBook(String category, Double minPrice, Double maxPrice, Double minDiscount
-//    , String sort, String stock, Integer pageNumber, Integer pageSize);
+
+    Page<Books> filterBooks(String pathName, Double minPrice, Double maxPrice
+    , Long nxbId, String sort, Integer pageNumber, Integer pageSize);
     Page<Books> getPageBook(int page, int size);
 
     Page<Books> searchBookByName(String bookTitle, Pageable pageable);
@@ -41,4 +42,8 @@ public interface BookService {
     void deleteBook(Long bookId);
 
     Books updateBook(Books books, Long bookId) throws ProductException;
+
+    Page<Books> getBookByPathName(String pathName, int page, int size) throws ApiException;
+
+    List<Books> findAll();
 }

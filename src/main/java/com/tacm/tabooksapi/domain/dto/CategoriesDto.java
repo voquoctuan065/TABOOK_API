@@ -20,7 +20,7 @@ public class CategoriesDto {
     private String categoryName;
     private Categories parentCategory;
     private List<Categories> children = new ArrayList<>();
-    private List<Books> books = new ArrayList<>();
+    private String pathName;
     private Integer level;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
