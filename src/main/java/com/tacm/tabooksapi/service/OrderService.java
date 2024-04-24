@@ -1,14 +1,15 @@
 package com.tacm.tabooksapi.service;
 
-import com.tacm.tabooksapi.domain.entities.Address;
+import com.tacm.tabooksapi.domain.dto.CartItemsRq;
 import com.tacm.tabooksapi.domain.entities.Orders;
 import com.tacm.tabooksapi.domain.entities.Users;
 import com.tacm.tabooksapi.exception.OrderException;
+import com.tacm.tabooksapi.exception.ProductException;
 
 import java.util.List;
 
 public interface OrderService {
-    public Orders createOrder(Users users, Address shippingAddress);
+    public Orders createOrder(Users users, CartItemsRq cartItemsRq) throws ProductException;
 
     public Orders findOderById(Long id) throws OrderException;
 
@@ -24,5 +25,5 @@ public interface OrderService {
 
     List<Orders> getAllOrders();
 
-    void deletedOrder(Long orderId);
+    void deletedOrder(Long orderId) throws OrderException;
 }

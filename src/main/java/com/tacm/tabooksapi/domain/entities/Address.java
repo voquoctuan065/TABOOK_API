@@ -1,5 +1,6 @@
 package com.tacm.tabooksapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,10 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
     private Long addressId;
+
+    @Column(name = "full_name")
+    private String fullName;
+
     @Column(name="street_address")
     private String streetAddress;
     @Column(name = "ward")
@@ -25,6 +30,7 @@ public class Address {
     @Column(name = "zip_code")
     private String zipCode;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;

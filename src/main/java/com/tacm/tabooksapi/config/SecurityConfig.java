@@ -39,7 +39,7 @@ public class SecurityConfig {
 		        .cors(Customizer.withDefaults())
                 .authorizeRequests(
                         request -> request
-                                .requestMatchers("/api/**", "/admin/**").authenticated()
+                                .requestMatchers("/public/order/**", "/admin/**").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

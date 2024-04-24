@@ -1,5 +1,6 @@
 package com.tacm.tabooksapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,8 @@ public class OrderItem {
     private Long orderItemId;
 
     @ManyToOne
-    @JsonIgnore
+    @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Orders order;
 
     @ManyToOne
