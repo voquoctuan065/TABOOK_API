@@ -1,5 +1,6 @@
 package com.tacm.tabooksapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,10 +47,11 @@ public class Users {
     private String userImage;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    private List<Address> address = new ArrayList<>();
+    @JsonManagedReference
+    private List<Orders> orders;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    private List<PaymentInfomation> paymentInfomation = new ArrayList<>();
+    private List<Address> address = new ArrayList<>();
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     @JsonIgnore

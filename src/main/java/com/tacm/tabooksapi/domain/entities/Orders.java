@@ -1,5 +1,6 @@
 package com.tacm.tabooksapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,8 @@ public class Orders {
     private Long orderId;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
     private Users users;
 
     @JsonManagedReference
@@ -36,9 +39,6 @@ public class Orders {
     @OneToOne
     private Address shippingAddress;
 
-    @Embedded
-    private PaymentDetail paymentDetail = new PaymentDetail();
-
     @Column(name = "total_price")
     private Double totalPrice;
 
@@ -53,6 +53,10 @@ public class Orders {
 
     @Column(name = "total_item")
     private Integer totalItem;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private PaymentInfo paymentInfo;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

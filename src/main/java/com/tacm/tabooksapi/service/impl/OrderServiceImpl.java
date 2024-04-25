@@ -37,11 +37,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Orders createOrder(Users users, CartItemsRq cartItemsRq) throws ProductException {
-//        Address address = addressRepository.save(cartItemsRq.getShippingAddress());
-//        address.setUsers(users);
-//        users.getAddress().add(address);
-//        userRepository.save(users);
-
         // Check if the shipping address already exists in the database
         Address address = addressRepository.findByFullNameAndStreetAddressAndWardAndDistrictAndProvinceAndZipCodeAndPhoneNumber(
                 cartItemsRq.getShippingAddress().getFullName(),
@@ -90,9 +85,6 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setOrderDate(LocalDateTime.now());
         createdOrder.setOrderStatus("PENDING");
         createdOrder.setCreatedAt(LocalDateTime.now());
-        createdOrder.setPaymentDetail(new PaymentDetail()); // Initialize PaymentDetail
-        createdOrder.getPaymentDetail().setPaymentStatus("PENDING");
-
         Orders savedOrder = orderRepository.save(createdOrder);
 
         for (OrderItem item : orderItems) {
@@ -118,7 +110,6 @@ public class OrderServiceImpl implements OrderService {
     public Orders placedOrder(Long id) throws OrderException {
         Orders orders = findOderById(id);
         orders.setOrderStatus("PLACED");
-        orders.getPaymentDetail().setPaymentStatus("COMPLETED");
         return orders;
     }
 

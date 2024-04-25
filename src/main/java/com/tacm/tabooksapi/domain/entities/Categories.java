@@ -33,7 +33,6 @@ public class Categories {
     private Categories parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Categories> children = new ArrayList<>();
 
     @Column(name = "path_name")

@@ -9,6 +9,7 @@ import com.tacm.tabooksapi.exception.OrderException;
 import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.exception.UserException;
 import com.tacm.tabooksapi.service.OrderService;
+import com.tacm.tabooksapi.service.PaymentService;
 import com.tacm.tabooksapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,13 @@ import java.util.List;
 public class OrderController {
     private OrderService orderService;
     private UserService userService;
+    private PaymentService paymentService;
 
     @Autowired
-    public OrderController(OrderService orderService, UserService userService) {
+    public OrderController(OrderService orderService, UserService userService, PaymentService paymentService) {
         this.orderService = orderService;
         this.userService = userService;
+        this.paymentService = paymentService;
     }
 
     @PostMapping("/create")
