@@ -14,4 +14,5 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     @Query("SELECT o from Orders  o where o.users.userId = :userId AND (o.orderStatus = 'PLACED' OR o.orderStatus = 'CONFIRMED' OR o.orderStatus = 'DELIVERED')")
     public List<Orders> getUserOrders(@Param("userId") Long userId);
 
+    List<Orders> findByUsers_UserId(Long user_id);
 }

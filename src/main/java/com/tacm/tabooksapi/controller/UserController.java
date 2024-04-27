@@ -1,6 +1,7 @@
 package com.tacm.tabooksapi.controller;
 
 import com.tacm.tabooksapi.domain.dto.ReqRes;
+import com.tacm.tabooksapi.domain.dto.UserDto;
 import com.tacm.tabooksapi.domain.entities.Users;
 import com.tacm.tabooksapi.exception.UserException;
 import com.tacm.tabooksapi.service.UserService;
@@ -21,9 +22,9 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<Users> getUserProfileByJwt(@RequestHeader("Authorization") String token) throws UserException {
+    public ResponseEntity<UserDto> getUserProfileByJwt(@RequestHeader("Authorization") String token) throws UserException {
         Users users = userService.findUserProfileByJwt(token);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(UserDto.fromEntity(users), HttpStatus.OK);
     }
 
 }

@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Builder
-@JsonSerialize
 public class Books {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,11 +47,9 @@ public class Books {
     @JoinColumn(name = "nxb_id", nullable = false)
     private NXBs nxbs;
 
-    @OneToMany(mappedBy = "books", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ratings> ratings = new ArrayList<>();
-
-    @OneToMany(mappedBy = "books", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reviews> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "books", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("books")
+    private List<BooksRate> reviews = new ArrayList<>();
 
     @Column(name = "num_rating")
     private Integer numRating;

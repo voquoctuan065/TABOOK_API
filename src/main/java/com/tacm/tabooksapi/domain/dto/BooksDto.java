@@ -2,9 +2,11 @@ package com.tacm.tabooksapi.domain.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tacm.tabooksapi.domain.entities.BooksRate;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,9 +39,9 @@ public class BooksDto {
 
     private NXBsDto nxb;
 
-    private List<RatingsDto> ratings;
-    private List<ReviewsDto> reviews;
     private Integer numRating;
+
+    private List<BooksRateDto> reviews = new ArrayList<>();
 
     @NotNull(message = "Năm xuất bản không được để trống")
     private Integer yearProduce;

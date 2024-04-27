@@ -24,13 +24,11 @@ import java.util.List;
 public class OrderController {
     private OrderService orderService;
     private UserService userService;
-    private PaymentService paymentService;
 
     @Autowired
-    public OrderController(OrderService orderService, UserService userService, PaymentService paymentService) {
+    public OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
         this.userService = userService;
-        this.paymentService = paymentService;
     }
 
     @PostMapping("/create")
@@ -67,6 +65,21 @@ public class OrderController {
             orderService.deletedOrder(orderId);
             ApiResponse apiResponse = new ApiResponse();
             apiResponse.setMessage("Xoá order thành công!");
+            apiResponse.setStatus(true);
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/cancel/{orderId}")
+    public ResponseEntity<ApiResponse> cancelOrder(@PathVariable Long orderId,
+                                                   @RequestHeader("Authorization") String jwt
+                                                   ) throws ApiException {
+        try {
+            orderService.canceledOrder(orderId);
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setMessage("Huỷ đơn hàng thành công!");
             apiResponse.setStatus(true);
             return new ResponseEntity<>(apiResponse, HttpStatus.OK);
         } catch (Exception e) {

@@ -102,8 +102,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Orders> userOrderHistory(Long userId) {
-        List<Orders> orders = orderRepository.getUserOrders(userId);
-        return orders;
+        List<Orders> orders = orderRepository.findByUsers_UserId(userId);
+         return orders;
     }
 
     @Override
@@ -136,10 +136,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Orders canceledOrder(Long id) throws OrderException {
+    public void canceledOrder(Long id) throws OrderException {
         Orders orders = findOderById(id);
         orders.setOrderStatus("CANCELLED");
-        return orderRepository.save(orders);
+        orderRepository.save(orders);
     }
 
     @Override

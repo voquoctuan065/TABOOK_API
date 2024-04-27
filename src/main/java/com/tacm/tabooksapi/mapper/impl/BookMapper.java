@@ -1,15 +1,14 @@
 package com.tacm.tabooksapi.mapper.impl;
 
-import com.tacm.tabooksapi.domain.dto.BooksDto;
-import com.tacm.tabooksapi.domain.dto.CategoriesDto;
-import com.tacm.tabooksapi.domain.dto.NXBsDto;
-import com.tacm.tabooksapi.domain.entities.Books;
-import com.tacm.tabooksapi.domain.entities.Categories;
-import com.tacm.tabooksapi.domain.entities.NXBs;
+import com.tacm.tabooksapi.domain.dto.*;
+import com.tacm.tabooksapi.domain.entities.*;
 import com.tacm.tabooksapi.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class BookMapper implements Mapper<Books, BooksDto> {
@@ -33,7 +32,12 @@ public class BookMapper implements Mapper<Books, BooksDto> {
                 new NXBsDto(books.getNxbs().getNxbId(), books.getNxbs().getNxbName(), books.getNxbs().getNxbInfo(),
                         books.getNxbs().getCreatedAt(), books.getNxbs().getCreatedAt())
                 : null);
+
+        booksDto.setReviews(books.getReviews().stream()
+                .map(this::mapRateToDto)
+                .collect(Collectors.toList()));
         return booksDto;
+
     }
 
     @Override
@@ -60,5 +64,8 @@ public class BookMapper implements Mapper<Books, BooksDto> {
             books.setNxbs(nxb);
         }
         return books;
+    }
+    private BooksRateDto mapRateToDto(BooksRate rate) {
+        return modelMapper.map(rate, BooksRateDto.class);
     }
 }

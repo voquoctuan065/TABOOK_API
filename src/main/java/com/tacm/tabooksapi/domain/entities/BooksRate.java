@@ -1,35 +1,37 @@
 package com.tacm.tabooksapi.domain.entities;
 
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Ratings {
+public class BooksRate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rating_id")
-    private Long ratingId;
+    @Column(name = "rate_id")
+    private Long rateId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users users;
+    private Users user;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
     private Books books;
 
-    @Column(name = "rating")
+    @Column(name = "rating", nullable = false)
     private Double rating;
+
+    @Column(name = "comment")
+    private String comment;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
 }

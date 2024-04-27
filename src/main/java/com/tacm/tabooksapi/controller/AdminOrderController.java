@@ -47,11 +47,11 @@ public class AdminOrderController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @PutMapping("/{order_id}/cancel")
-    public ResponseEntity<Orders> CancelOrderHandler(@PathVariable Long order_id, @RequestHeader("Authorization") String token) throws OrderException {
-        Orders orders = orderService.canceledOrder(order_id);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
-    }
+//    @PutMapping("/{order_id}/cancel")
+//    public ResponseEntity<Orders> CancelOrderHandler(@PathVariable Long order_id, @RequestHeader("Authorization") String token) throws OrderException {
+//        Orders orders = orderService.canceledOrder(order_id);
+//        return new ResponseEntity<>(orders, HttpStatus.OK);
+//    }
 
     @DeleteMapping("/{order_id}/delete")
     public ResponseEntity<ApiResponse> DeleteOrderHandler(@PathVariable Long order_id, @RequestHeader("Authorization") String token) throws OrderException {
