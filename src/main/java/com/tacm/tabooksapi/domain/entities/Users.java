@@ -45,13 +45,10 @@ public class Users {
     private String userImage;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnoreProperties("users")
     private List<Orders> orders;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private List<Address> address = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({"user"})
-    private List<BooksRate> reviews = new ArrayList<>();
 }

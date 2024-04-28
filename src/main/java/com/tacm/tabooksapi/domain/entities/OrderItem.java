@@ -2,6 +2,8 @@ package com.tacm.tabooksapi.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +27,7 @@ public class OrderItem {
     private Orders order;
 
     @ManyToOne
+    @JsonManagedReference
     private Books books;
 
     @Column(name = "quantity")

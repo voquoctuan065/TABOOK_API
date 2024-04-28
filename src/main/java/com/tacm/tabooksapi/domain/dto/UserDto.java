@@ -1,10 +1,15 @@
 package com.tacm.tabooksapi.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tacm.tabooksapi.domain.entities.Address;
 import com.tacm.tabooksapi.domain.entities.Users;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +23,7 @@ public class UserDto {
     private String role;
     private String phoneNumber;
     private String userImage;
+    private List<AddressDto> address = new ArrayList<>();
 
     public static UserDto fromEntity(Users users) {
         return new UserDto(
@@ -27,7 +33,8 @@ public class UserDto {
                 users.getPassword(),
                 users.getRole(),
                 users.getPhoneNumber(),
-                users.getUserImage()
+                users.getUserImage(),
+                users.getAddress().stream().map(AddressDto::fromEntity).collect(Collectors.toList())
         );
     }
 }

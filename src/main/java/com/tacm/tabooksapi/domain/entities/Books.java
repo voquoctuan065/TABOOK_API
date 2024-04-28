@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,7 +46,7 @@ public class Books {
     private NXBs nxbs;
 
     @OneToMany(mappedBy = "books", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("books")
+    @JsonManagedReference
     private List<BooksRate> reviews = new ArrayList<>();
 
     @Column(name = "num_rating")

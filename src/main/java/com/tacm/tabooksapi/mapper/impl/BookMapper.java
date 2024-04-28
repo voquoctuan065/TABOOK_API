@@ -33,9 +33,9 @@ public class BookMapper implements Mapper<Books, BooksDto> {
                         books.getNxbs().getCreatedAt(), books.getNxbs().getCreatedAt())
                 : null);
 
-        booksDto.setReviews(books.getReviews().stream()
-                .map(this::mapRateToDto)
-                .collect(Collectors.toList()));
+//        booksDto.setReviews(books.getReviews().stream()
+//                .map(this::mapRateToDto)
+//                .collect(Collectors.toList()));
         return booksDto;
 
     }

@@ -2,6 +2,7 @@ package com.tacm.tabooksapi.controller;
 
 import com.tacm.tabooksapi.domain.dto.ApiResponse;
 import com.tacm.tabooksapi.domain.dto.CartItemsRq;
+import com.tacm.tabooksapi.domain.dto.OrderDto;
 import com.tacm.tabooksapi.domain.entities.Orders;
 import com.tacm.tabooksapi.domain.entities.Users;
 import com.tacm.tabooksapi.exception.ApiException;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("*")
@@ -32,31 +34,29 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Orders> createOrder(
+    public ResponseEntity<OrderDto> createOrder(
                                               @RequestBody CartItemsRq cartItemsRq,
                                               @RequestHeader("Authorization") String token) throws UserException, ProductException {
         Users users = userService.findUserProfileByJwt(token);
-
         Orders orders = orderService.createOrder(users, cartItemsRq);
 
-        return new ResponseEntity<>(orders, HttpStatus.CREATED);
+        return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.CREATED);
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<Orders>> userOrderHistory(@RequestHeader("Authorization") String token) throws UserException  {
+    public ResponseEntity<List<OrderDto>> userOrderHistory(@RequestHeader("Authorization") String token) throws UserException  {
         Users users = userService.findUserProfileByJwt(token);
-
         List<Orders> orders = orderService.userOrderHistory(users.getUserId());
-
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        List<OrderDto> orderDtos = orders.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
+        return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Orders> findOrderById(@PathVariable("id") Long id, @RequestHeader("Authorization") String token) throws UserException, OrderException {
+    public ResponseEntity<OrderDto> findOrderById(@PathVariable("id") Long id, @RequestHeader("Authorization") String token) throws UserException, OrderException {
         Users users = userService.findUserProfileByJwt(token);
         Orders orders = orderService.findOderById(id);
 
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.OK);
     }
 
     @DeleteMapping("/{orderId}")

@@ -11,8 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItemsRq {
-    private List<CartItem> cartItems;
+
+    private AddressDto shippingAddress;
+    private List<CartItem> cartItem;
     private int cartTotalQuantity;
     private double cartTotalAmount;
-    private Address shippingAddress;
+
 }

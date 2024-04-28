@@ -1,5 +1,6 @@
 package com.tacm.tabooksapi.service.impl;
 
+import com.tacm.tabooksapi.domain.dto.AddressDto;
 import com.tacm.tabooksapi.domain.dto.CartItem;
 import com.tacm.tabooksapi.domain.dto.CartItemsRq;
 import com.tacm.tabooksapi.domain.entities.*;
@@ -50,13 +51,13 @@ public class OrderServiceImpl implements OrderService {
 
         // If not found, save the new shipping address to the database
         if (address == null) {
-            address = addressRepository.save(cartItemsRq.getShippingAddress());
+            address = addressRepository.save(AddressDto.fromDto(cartItemsRq.getShippingAddress()));
             address.setUsers(users);
             users.getAddress().add(address);
             userRepository.save(users);
         }
 
-        List<CartItem> cartItems = cartItemsRq.getCartItems();
+        List<CartItem> cartItems = cartItemsRq.getCartItem();
 
         List<OrderItem> orderItems = null;
         if (cartItems != null) {
