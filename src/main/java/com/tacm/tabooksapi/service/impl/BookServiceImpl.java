@@ -186,4 +186,19 @@ public class BookServiceImpl implements BookService {
     public List<Books> findAll() {
         return StreamSupport.stream(bookRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
+
+    @Override
+    public Long getTotalBooks() {
+        return bookRepository.count();
+    }
+
+    @Override
+    public long getTotalBookSearching(String keyword) {
+        return bookRepository.countByBookTitleContainingIgnoreCase(keyword);
+    }
+
+    @Override
+    public long getTotalBookPathName(String pathName) {
+        return bookRepository.countByCategoriesPathName(pathName);
+    }
 }

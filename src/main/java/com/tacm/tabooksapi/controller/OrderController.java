@@ -39,7 +39,6 @@ public class OrderController {
                                               @RequestHeader("Authorization") String token) throws UserException, ProductException {
         Users users = userService.findUserProfileByJwt(token);
         Orders orders = orderService.createOrder(users, cartItemsRq);
-
         return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.CREATED);
     }
 

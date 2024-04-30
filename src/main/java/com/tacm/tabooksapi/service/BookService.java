@@ -46,4 +46,10 @@ public interface BookService {
     Page<Books> getBookByPathName(String pathName, int page, int size) throws ApiException;
 
     List<Books> findAll();
+
+    Long getTotalBooks();
+
+    long getTotalBookSearching(String keyword);
+
+    long getTotalBookPathName(String pathName);
 }

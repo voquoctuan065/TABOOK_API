@@ -51,4 +51,8 @@ public interface BookRepository extends JpaRepository<Books, Long> {
     Page<Books> findByBookTitle(@Param("bookTitle") String bookTitle, Pageable pageable);
 
     Page<Books> findByCategoriesPathName(String pathName, Pageable pageable);
+
+    long countByBookTitleContainingIgnoreCase(String keyword);
+
+    long countByCategoriesPathName(String pathName);
 }
