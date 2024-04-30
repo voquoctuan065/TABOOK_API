@@ -13,4 +13,6 @@ public interface CategoryRedisService {
     List<CategoriesDto> getLevelOneAndChildren() throws JsonProcessingException;
 
     void saveLevelOneAndChildren(List<CategoriesDto> categoriesDtoList);
+
+    void clear();
 }

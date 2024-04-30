@@ -73,6 +73,11 @@ public class CategoryRedisServiceImpl implements CategoryRedisService {
         }
     }
 
+    @Override
+    public void clear() {
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
+    }
+
     private String generateCategoryAllCacheKey() {
         return String.format("%s", "categories");
     }

@@ -25,4 +25,6 @@ public interface CategoriesService {
     Categories findCategoryById(Long categoryId) throws ApiException;
 
     public List<Categories> getLevelOneAndChildren();
+
+
 }

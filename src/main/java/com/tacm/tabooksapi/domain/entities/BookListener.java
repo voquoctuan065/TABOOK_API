@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 @AllArgsConstructor
 public class BookListener {
+
     private final BookRedisService bookRedisService;
 
     private static final Logger logger = LoggerFactory.getLogger(BookListener.class);
