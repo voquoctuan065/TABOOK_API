@@ -173,5 +173,17 @@ public class BookController {
         return new BooksPageDto(booksDtoList, totalPages);
     }
 
+    @GetMapping("/latest")
+    public ResponseEntity<List<BooksDto>> getLatestBooks() throws JsonProcessingException {
+        List<BooksDto> booksDtoList = bookRedisService.findLatestBooks();
+
+        if(booksDtoList == null) {
+            List<Books> latestBooks = bookService.findLatestBooks();
+            booksDtoList = latestBooks.stream().map(bookMapper::mapTo).collect(Collectors.toList());
+            bookRedisService.saveLatestBooks(booksDtoList);
+        }
+
+        return ResponseEntity.ok(booksDtoList);
+    }
 
 }

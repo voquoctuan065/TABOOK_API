@@ -52,4 +52,6 @@ public interface BookService {
     long getTotalBookSearching(String keyword);
 
     long getTotalBookPathName(String pathName);
+
+    List<Books> findLatestBooks();
 }

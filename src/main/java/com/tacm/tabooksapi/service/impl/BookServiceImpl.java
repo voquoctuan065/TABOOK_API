@@ -201,4 +201,10 @@ public class BookServiceImpl implements BookService {
     public long getTotalBookPathName(String pathName) {
         return bookRepository.countByCategoriesPathName(pathName);
     }
+
+    @Override
+    public List<Books> findLatestBooks() {
+
+        return bookRepository.findLatestBooks();
+    }
 }

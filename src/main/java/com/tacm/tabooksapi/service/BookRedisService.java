@@ -25,4 +25,8 @@ public interface BookRedisService {
     BooksDto findBookById(Long bookId) throws JsonProcessingException;
 
     void saveBookById(BooksDto booksDto, Long bookId);
+
+    List<BooksDto> findLatestBooks() throws JsonProcessingException;
+
+    void saveLatestBooks(List<BooksDto> booksDtoList);
 }

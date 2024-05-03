@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -55,4 +56,7 @@ public interface BookRepository extends JpaRepository<Books, Long> {
     long countByBookTitleContainingIgnoreCase(String keyword);
 
     long countByCategoriesPathName(String pathName);
+
+    @Query(value = "SELECT TOP 12 * FROM books ORDER BY created_at DESC", nativeQuery = true)
+    List<Books> findLatestBooks();
 }

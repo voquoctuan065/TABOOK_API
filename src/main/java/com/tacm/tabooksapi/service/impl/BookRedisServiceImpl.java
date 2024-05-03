@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tacm.tabooksapi.domain.dto.BooksDto;
 import com.tacm.tabooksapi.domain.dto.BooksPageDto;
+import com.tacm.tabooksapi.domain.dto.CategoriesDto;
 import com.tacm.tabooksapi.domain.entities.Books;
 import com.tacm.tabooksapi.service.BookRedisService;
 import com.tacm.tabooksapi.service.BookService;
@@ -145,6 +146,26 @@ public class BookRedisServiceImpl implements BookRedisService {
     }
 
     @Override
+    public List<BooksDto> findLatestBooks() throws JsonProcessingException {
+        String cacheKey = generateLatestBookCacheKey();
+        String json = (String) redisTemplate.opsForValue().get(cacheKey);
+        List<BooksDto> booksDtoList = json != null ?  redisObjectMapper.readValue(json, new TypeReference<List<BooksDto>>(){}) : null;
+
+        return booksDtoList;
+    }
+
+    @Override
+    public void saveLatestBooks(List<BooksDto> booksDtoList) {
+        String cacheKey = generateLatestBookCacheKey();
+        try {
+            String json = redisObjectMapper.writeValueAsString(booksDtoList);
+            redisTemplate.opsForValue().set(cacheKey, json, expirationTimeInSeconds, TimeUnit.SECONDS);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void clear() {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
@@ -166,4 +187,7 @@ public class BookRedisServiceImpl implements BookRedisService {
         return String.format("%s_%d", BOOKS_CACHE_PREFIX, bookId);
     }
 
+    private String generateLatestBookCacheKey() {
+        return String.format("%s", "latest_book");
+    }
 }
