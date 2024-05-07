@@ -204,7 +204,16 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Books> findLatestBooks() {
-
         return bookRepository.findLatestBooks();
+    }
+
+    @Override
+    public List<Books> findFavoriteBooks() {
+        return bookRepository.findDistinctBookWithRatingGreaterThanEqual4();
+    }
+
+    @Override
+    public List<Books> findHotBooks() {
+        return bookRepository.findByHotTrue();
     }
 }

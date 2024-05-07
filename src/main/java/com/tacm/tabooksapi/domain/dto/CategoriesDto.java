@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.tacm.tabooksapi.domain.entities.Books;
 import com.tacm.tabooksapi.domain.entities.Categories;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class CategoriesDto {
     private Long categoryId;
     private String categoryName;
-    private Categories parentCategory;
+    private Categories  parentCategory;
     private List<Categories> children = new ArrayList<>();
     private String pathName;
     private Integer level;

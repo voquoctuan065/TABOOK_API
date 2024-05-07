@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Builder
-@JsonIgnoreProperties({"parentCategory"})
+@JsonIgnoreProperties({"parentCategory", "hibernateLazyInitializer", "handler"})
 public class Categories {
 
     @Id

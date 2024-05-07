@@ -59,4 +59,9 @@ public interface BookRepository extends JpaRepository<Books, Long> {
 
     @Query(value = "SELECT TOP 12 * FROM books ORDER BY created_at DESC", nativeQuery = true)
     List<Books> findLatestBooks();
+
+    @Query("SELECT DISTINCT b FROM Books b INNER JOIN BooksRate br ON b.bookId = br.books.bookId  where br.rating >= 4")
+    List<Books> findDistinctBookWithRatingGreaterThanEqual4();
+
+    List<Books> findByHotTrue();
 }

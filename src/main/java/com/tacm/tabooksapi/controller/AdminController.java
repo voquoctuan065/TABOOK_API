@@ -1,5 +1,6 @@
 package com.tacm.tabooksapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tacm.tabooksapi.domain.dto.*;
 import com.tacm.tabooksapi.domain.entities.Books;
 import com.tacm.tabooksapi.domain.entities.Categories;
@@ -9,14 +10,12 @@ import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.mapper.impl.BookMapper;
 import com.tacm.tabooksapi.mapper.impl.CategoriesMapper;
 import com.tacm.tabooksapi.mapper.impl.NXBsMapper;
-import com.tacm.tabooksapi.service.BookService;
-import com.tacm.tabooksapi.service.CategoriesService;
-import com.tacm.tabooksapi.service.ImageService;
-import com.tacm.tabooksapi.service.NXBsService;
+import com.tacm.tabooksapi.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,11 +42,15 @@ public class AdminController {
     private NXBsService nxbService;
 
     private ImageService imageService;
+    private CategoryRedisService categoryRedisService;
+    private NXBsRedisService nxBsRedisService;
     @Autowired
     public AdminController(CategoriesService categoriesService, CategoriesMapper categoriesMapper,
                            BookService bookService, BookMapper bookMapper,
                            NXBsMapper nxbMapper, NXBsService nxbService,
-                           ImageService imageService) {
+                           ImageService imageService,
+                           CategoryRedisService categoryRedisService,
+                           NXBsRedisService nxBsRedisService) {
         this.categoriesService = categoriesService;
         this.categoriesMapper = categoriesMapper;
         this.bookService = bookService;
@@ -55,6 +58,8 @@ public class AdminController {
         this.nxbMapper = nxbMapper;
         this.nxbService = nxbService;
         this.imageService = imageService;
+        this.categoryRedisService = categoryRedisService;
+        this.nxBsRedisService = nxBsRedisService;
     }
 
 
@@ -64,13 +69,36 @@ public class AdminController {
     public CategoriesPageDto getAllCategories(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<Categories> categoriesPage = categoriesService.getAllCategorires(page, size);
-        List<CategoriesDto> categoriesDtoList = categoriesPage.getContent().stream().map(categoriesMapper::mapTo).collect(Collectors.toList());
-        int totalPages = categoriesPage.getTotalPages();
+    ) throws JsonProcessingException {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("categoryId").descending());
 
-        return new CategoriesPageDto(categoriesDtoList, totalPages);
+        CategoriesPageDto categoriesPageDto = categoryRedisService.getAllCategories(pageRequest);
+        if(categoriesPageDto == null) {
+            Page<Categories> categoriesPage = categoriesService.getAllCategorires(pageRequest);
+            List<CategoriesDto> categoriesDtoList = categoriesPage.getContent().stream().map(categoriesMapper::mapTo).collect(Collectors.toList());
+            int totalPages = categoriesPage.getTotalPages();
+
+            categoryRedisService.saveAllCategory(categoriesDtoList, pageRequest);
+            return new CategoriesPageDto(categoriesDtoList, totalPages);
+        } else {
+            return categoriesPageDto;
+        }
+
     }
+
+    @GetMapping(path = "/category/list-category")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<CategoriesDto> listCategories() throws JsonProcessingException {
+        List<CategoriesDto> categoriesDtoList = categoryRedisService.findAll();
+        if(categoriesDtoList == null) {
+            List<Categories> category = categoriesService.findAll();
+            categoriesDtoList = category.stream().map(categoriesMapper::mapTo).collect(Collectors.toList());
+            categoryRedisService.saveAll(categoriesDtoList);
+        }
+
+        return categoriesDtoList;
+    }
+
 
     @GetMapping("/category/search")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -91,12 +119,6 @@ public class AdminController {
         return categoriesMapper.mapTo(savedCategories);
     }
 
-    @GetMapping(path = "/category/list-category")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public List<CategoriesDto> listCategories() {
-        List<Categories> category = categoriesService.findAll();
-        return category.stream().map(categoriesMapper::mapTo).collect(Collectors.toList());
-    }
 
     @DeleteMapping(path = "/category/delete/{categoryId}")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -208,16 +230,26 @@ public class AdminController {
 
     @GetMapping(path = "/nxb/list-nxb")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public List<NXBsDto> getListNXBs() {
-        List<NXBs> nxbList = nxbService.findAll();
-        return nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
+    public List<NXBsDto> getListNXBs() throws JsonProcessingException {
+        List<NXBsDto> nxBsDtoList = nxBsRedisService.findAll();
+        if(nxBsDtoList == null) {
+            List<NXBs> nxbList = nxbService.findAll();
+            nxBsDtoList = nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
+            nxBsRedisService.saveAll(nxBsDtoList);
+        }
+        return nxBsDtoList;
     }
 
     @GetMapping(path = "/nxb/search")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<NXBsDto>> searchNxbByName (@RequestParam String keyword) {
-        List<NXBs> nxbList = nxbService.searchNxbByName(keyword);
-        List<NXBsDto> nxBsDtoList = nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
+    public ResponseEntity<List<NXBsDto>> searchNxbByName (@RequestParam String keyword) throws JsonProcessingException {
+        List<NXBsDto> nxBsDtoList = nxBsRedisService.searchNxbByName(keyword);
+
+        if(nxBsDtoList == null) {
+            List<NXBs> nxbList = nxbService.searchNxbByName(keyword);
+            nxBsDtoList = nxbList.stream().map(nxbMapper::mapTo).collect(Collectors.toList());
+            nxBsRedisService.saveNxbByName(nxBsDtoList, keyword);
+        }
         return ResponseEntity.ok(nxBsDtoList);
     }
 
@@ -251,13 +283,14 @@ public class AdminController {
 
     @GetMapping(path = "/nxb/{nxbId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public NXBsDto findNxbById(@PathVariable("nxbId") Long nxbId)  {
-        try {
+    public NXBsDto findNxbById(@PathVariable("nxbId") Long nxbId) throws ApiException {
+        NXBsDto nxBsDto = nxBsRedisService.findNxbById(nxbId);
+        if(nxBsDto == null) {
             NXBs nxBs = nxbService.findNxbById(nxbId);
-            return nxbMapper.mapTo(nxBs);
-        } catch ( ApiException e) {
-            throw new RuntimeException(e);
+            nxBsDto = nxbMapper.mapTo(nxBs);
+            nxBsRedisService.saveNxbById(nxBsDto, nxbId);
         }
+        return nxBsDto;
     }
     //------------------------------------------------- End NXBs ------------------------------------------------//
 

@@ -11,4 +11,12 @@ public interface NXBsRedisService {
     void saveAll(List<NXBsDto> nxBsDtoList);
 
     List<NXBsDto> findAll() throws JsonProcessingException;
+
+    List<NXBsDto> searchNxbByName(String keyword) throws JsonProcessingException;
+
+    void saveNxbByName(List<NXBsDto> nxBsDtoList, String keyword);
+
+    void saveNxbById(NXBsDto nxBsDto, Long nxbId);
+
+    NXBsDto findNxbById(Long nxbId) throws JsonProcessingException;
 }

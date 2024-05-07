@@ -54,4 +54,8 @@ public interface BookService {
     long getTotalBookPathName(String pathName);
 
     List<Books> findLatestBooks();
+
+    List<Books> findFavoriteBooks();
+
+    List<Books> findHotBooks();
 }

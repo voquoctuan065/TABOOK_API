@@ -2,6 +2,7 @@ package com.tacm.tabooksapi.controller;
 
 import com.tacm.tabooksapi.config.JwtProvider;
 import com.tacm.tabooksapi.domain.dto.LoginRequest;
+import com.tacm.tabooksapi.domain.dto.UserDto;
 import com.tacm.tabooksapi.domain.entities.Users;
 import com.tacm.tabooksapi.exception.ApiException;
 import com.tacm.tabooksapi.exception.UserException;
@@ -37,10 +38,11 @@ public class AuthController {
         this.userServiceImpl = userServiceImpl;
     }
     @PostMapping("/signup")
-    public ResponseEntity<ReqRes> creatUserHandler(@RequestBody Users users) throws ApiException {
-        String email = users.getEmail();
-        String password = users.getPassword();
-        String full_name = users.getFullName();
+    public ResponseEntity<ReqRes> creatUserHandler(@RequestBody UserDto userDto) throws ApiException {
+
+        String email = userDto.getEmail();
+        String password = userDto.getPassword();
+        String full_name = userDto.getFullName();
         Users isEmailExist = userRepository.findByEmail(email);
 
         if(isEmailExist != null) {

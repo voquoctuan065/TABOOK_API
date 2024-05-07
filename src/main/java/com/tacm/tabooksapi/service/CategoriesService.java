@@ -13,8 +13,7 @@ public interface CategoriesService {
     List<Categories> findAll();
 
     Categories create(Categories categories);
-
-    Page<Categories> getAllCategorires(int page, int size);
+    
 
     Page<Categories> searchCategoriesByName(String category_name, Pageable pageable);
 
@@ -27,4 +26,7 @@ public interface CategoriesService {
     public List<Categories> getLevelOneAndChildren();
 
 
+    Page<Categories> getAllCategorires(PageRequest pageRequest);
+
+    long getTotalCategories();
 }

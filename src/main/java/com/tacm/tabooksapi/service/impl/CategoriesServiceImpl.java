@@ -51,12 +51,12 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     //--------------------------- Get Page Category ------------------//
+
     @Override
-    public Page<Categories> getAllCategorires(int page, int size) {
-        Sort sortInfo = Sort.by(Sort.Direction.DESC, "categoryId");
-        Pageable pageable = PageRequest.of(page, size, sortInfo);
-        return categoriesRepository.findAll(pageable);
+    public Page<Categories> getAllCategorires(PageRequest pageRequest) {
+        return categoriesRepository.findAll(pageRequest);
     }
+
     //--------------------------- End Page Category ------------------//
 
     //--------------------------- Search Page Category ------------------//
@@ -96,5 +96,8 @@ public class CategoriesServiceImpl implements CategoriesService {
     //--------------------------- End Find Category By Id ---------------------//
 
 
-
+    @Override
+    public long getTotalCategories() {
+        return categoriesRepository.count();
+    }
 }

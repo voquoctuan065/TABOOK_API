@@ -186,4 +186,20 @@ public class BookController {
         return ResponseEntity.ok(booksDtoList);
     }
 
+    @GetMapping("/favorite")
+    public ResponseEntity<List<BooksDto>> getFavoriteBooks() {
+        List<Books> favoriteBooks = bookService.findFavoriteBooks();
+        List<BooksDto> booksDtoList = favoriteBooks.stream().map(bookMapper::mapTo).collect(Collectors.toList());
+        return ResponseEntity.ok(booksDtoList);
+    }
+
+    @GetMapping("/hot")
+    public ResponseEntity<List<BooksDto>> getHotBooks() {
+        List<Books> favoriteBooks = bookService.findHotBooks();
+        List<BooksDto> booksDtoList = favoriteBooks.stream().map(bookMapper::mapTo).collect(Collectors.toList());
+        return ResponseEntity.ok(booksDtoList);
+    }
+
+
+
 }
