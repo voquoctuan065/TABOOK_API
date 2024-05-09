@@ -6,36 +6,41 @@ import com.tacm.tabooksapi.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class BookMapper implements Mapper<Books, BooksDto> {
+public class BookMapper implements Mapper<Books, BooksDto>  {
+
+    private ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public BookMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public BooksDto mapTo(Books books) {
         BooksDto booksDto = modelMapper.map(books, BooksDto.class);
-        booksDto.setCategory(books.getCategories() != null ?
-                new CategoriesDto(books.getCategories().getCategoryId(),
-                        books.getCategories().getCategoryName(),
-                        null,
-                        null,
-                        books.getCategories().getPathName(),
-                        books.getCategories().getLevel(), books.getCategories().getCreatedAt(),
-                        books.getCategories().getUpdatedAt())
-                : null);
+        CategoriesDto categoriesDto = null;
+        if(books.getCategories() != null) {
+            categoriesDto = CategoriesDto.builder()
+                    .categoryId(books.getCategories().getCategoryId())
+                    .categoryName(books.getCategories().getCategoryName())
+                    .pathName(books.getCategories().getPathName())
+                    .level(books.getCategories().getLevel())
+                    .build();
+        }
+        booksDto.setCategory(categoriesDto);
+
         booksDto.setNxb(books.getNxbs() != null ?
                 new NXBsDto(books.getNxbs().getNxbId(), books.getNxbs().getNxbName(), books.getNxbs().getNxbInfo(),
                         books.getNxbs().getCreatedAt(), books.getNxbs().getCreatedAt())
                 : null);
 
-//        booksDto.setReviews(books.getReviews().stream()
-//                .map(this::mapRateToDto)
-//                .collect(Collectors.toList()));
+
         return booksDto;
 
     }
@@ -68,4 +73,6 @@ public class BookMapper implements Mapper<Books, BooksDto> {
     private BooksRateDto mapRateToDto(BooksRate rate) {
         return modelMapper.map(rate, BooksRateDto.class);
     }
+
+
 }

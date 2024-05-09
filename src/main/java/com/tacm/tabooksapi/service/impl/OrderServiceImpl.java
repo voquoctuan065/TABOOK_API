@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -124,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Orders shippedOrder(Long id) throws OrderException {
         Orders orders = findOderById(id);
-        orders.setOrderStatus("SHIPPED");
+        orders.setOrderStatus("SHIPPING");
         return orderRepository.save(orders);
     }
 
@@ -151,5 +153,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deletedOrder(Long orderId) throws OrderException {
         orderRepository.deleteById(orderId);
+    }
+
+    @Override
+    public List<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
+        return orderRepository.filterPendingOrder(keyword, startTime, endTime);
+    }
+
+    @Override
+    public List<Orders> filterConfirmedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
+        return orderRepository.filterConfirmedOrder(keyword, startTime, endTime);
+    }
+
+    @Override
+    public List<Orders> filterShippingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
+        return orderRepository.filterShippingOrder(keyword, startTime , endTime);
+    }
+
+    @Override
+    public List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
+        return orderRepository.filterDeliveredOrder(keyword, startTime, endTime);
     }
 }

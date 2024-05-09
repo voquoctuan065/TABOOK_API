@@ -6,6 +6,7 @@ import com.tacm.tabooksapi.domain.entities.Users;
 import com.tacm.tabooksapi.exception.OrderException;
 import com.tacm.tabooksapi.exception.ProductException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderService {
@@ -26,4 +27,12 @@ public interface OrderService {
     List<Orders> getAllOrders();
 
     void deletedOrder(Long orderId) throws OrderException;
+
+    List<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Orders> filterConfirmedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Orders> filterShippingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
 }

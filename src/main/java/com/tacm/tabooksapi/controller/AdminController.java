@@ -5,17 +5,21 @@ import com.tacm.tabooksapi.domain.dto.*;
 import com.tacm.tabooksapi.domain.entities.Books;
 import com.tacm.tabooksapi.domain.entities.Categories;
 import com.tacm.tabooksapi.domain.entities.NXBs;
+import com.tacm.tabooksapi.domain.entities.Orders;
 import com.tacm.tabooksapi.exception.ApiException;
+import com.tacm.tabooksapi.exception.OrderException;
 import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.mapper.impl.BookMapper;
 import com.tacm.tabooksapi.mapper.impl.CategoriesMapper;
 import com.tacm.tabooksapi.mapper.impl.NXBsMapper;
 import com.tacm.tabooksapi.service.*;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +31,8 @@ import java.awt.print.Book;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,13 +50,17 @@ public class AdminController {
     private ImageService imageService;
     private CategoryRedisService categoryRedisService;
     private NXBsRedisService nxBsRedisService;
+    private OrderService orderService;
+    private PaymentService paymentService;
     @Autowired
     public AdminController(CategoriesService categoriesService, CategoriesMapper categoriesMapper,
                            BookService bookService, BookMapper bookMapper,
                            NXBsMapper nxbMapper, NXBsService nxbService,
                            ImageService imageService,
                            CategoryRedisService categoryRedisService,
-                           NXBsRedisService nxBsRedisService) {
+                           NXBsRedisService nxBsRedisService,
+                           OrderService orderService,
+                           PaymentService paymentService) {
         this.categoriesService = categoriesService;
         this.categoriesMapper = categoriesMapper;
         this.bookService = bookService;
@@ -60,6 +70,8 @@ public class AdminController {
         this.imageService = imageService;
         this.categoryRedisService = categoryRedisService;
         this.nxBsRedisService = nxBsRedisService;
+        this.orderService = orderService;
+        this.paymentService = paymentService;
     }
 
 
@@ -145,11 +157,11 @@ public class AdminController {
 
     @PostMapping("/book/add")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<BooksDto> addNewBook(@Valid @RequestBody BooksDto booksDto) throws  ApiException {
+    public ResponseEntity<BookReq> addNewBook( @RequestBody BookReq bookReq) throws  ApiException {
         try {
-            Books books = bookMapper.mapFrom(booksDto);
+            Books books = BookReq.fromDto(bookReq);
             Books savedBook = bookService.addBook(books);
-            return new ResponseEntity<>(bookMapper.mapTo(savedBook), HttpStatus.OK);
+            return new ResponseEntity<>(BookReq.fromEntity(savedBook), HttpStatus.OK);
         } catch (Exception e) {
             throw new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -283,7 +295,7 @@ public class AdminController {
 
     @GetMapping(path = "/nxb/{nxbId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public NXBsDto findNxbById(@PathVariable("nxbId") Long nxbId) throws ApiException {
+    public NXBsDto findNxbById(@PathVariable("nxbId") Long nxbId) throws ApiException, JsonProcessingException {
         NXBsDto nxBsDto = nxBsRedisService.findNxbById(nxbId);
         if(nxBsDto == null) {
             NXBs nxBs = nxbService.findNxbById(nxbId);
@@ -308,4 +320,115 @@ public class AdminController {
     }
     //-------------------------------------------- End Upload Image To Drive --------------------------------------//
 
+    //-------------------------------------------- Order --------------------------------------//
+
+    @PutMapping("/order/confirmed/{orderId}")
+    public ResponseEntity<OrderDto> confirmOrder(@PathVariable Long orderId) throws OrderException {
+        Orders orders = orderService.confirmedOrder(orderId);
+        return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.OK);
+    }
+
+    @PutMapping("/order/shipping/{orderId}")
+    public ResponseEntity<OrderDto> shippingOrder(@PathVariable Long orderId) throws  OrderException {
+        Orders orders = orderService.shippedOrder(orderId);
+        return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.OK);
+    }
+
+    @PutMapping("/order/delivered/{orderId}")
+    public ResponseEntity<OrderDto> deliveredOrder(@PathVariable Long orderId) throws OrderException {
+        Orders orders = orderService.deliveredOrder(orderId);
+        return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.OK);
+    }
+
+    @GetMapping("/order/pending/filter")
+    public ResponseEntity<List<OrderWithPaymentDto>> pendingFilterOrder(@RequestParam(required = false) String keyword,
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime
+    ) {
+        List<Orders> orders = orderService.filterPendingOrder(keyword, startTime, endTime);
+        List<OrderDto> orderDtos = orders.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
+        if(orderDtos == null) {
+            return ResponseEntity.noContent().build();
+        }
+        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
+        for(OrderDto orderDto : orderDtos) {
+            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
+
+            OrderWithPaymentDto orderWithPaymentDto = new OrderWithPaymentDto(orderDto, paymentInfoDto);
+            orderWithPaymentDtoList.add(orderWithPaymentDto);
+        }
+
+        return ResponseEntity.ok(orderWithPaymentDtoList);
+
+    }
+
+    @GetMapping("/order/confirmed/filter")
+    public ResponseEntity<List<OrderWithPaymentDto>> confirmedFilterOrder(@RequestParam(required = false) String keyword,
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime
+    ) {
+        List<Orders> orders = orderService.filterConfirmedOrder(keyword, startTime, endTime);
+        List<OrderDto> orderDtos = orders.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
+        if(orderDtos == null) {
+            return ResponseEntity.noContent().build();
+        }
+        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
+        for(OrderDto orderDto : orderDtos) {
+            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
+
+            OrderWithPaymentDto orderWithPaymentDto = new OrderWithPaymentDto(orderDto, paymentInfoDto);
+            orderWithPaymentDtoList.add(orderWithPaymentDto);
+        }
+
+        return ResponseEntity.ok(orderWithPaymentDtoList);
+
+    }
+
+
+    @GetMapping("/order/shipping/filter")
+    public ResponseEntity<List<OrderWithPaymentDto>> shippingFilterOrder(@RequestParam(required = false) String keyword,
+                                                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
+                                                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime
+    ) {
+        List<Orders> orders = orderService.filterShippingOrder(keyword, startTime, endTime);
+        List<OrderDto> orderDtos = orders.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
+        if(orderDtos == null) {
+            return ResponseEntity.noContent().build();
+        }
+        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
+        for(OrderDto orderDto : orderDtos) {
+            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
+
+            OrderWithPaymentDto orderWithPaymentDto = new OrderWithPaymentDto(orderDto, paymentInfoDto);
+            orderWithPaymentDtoList.add(orderWithPaymentDto);
+        }
+
+        return ResponseEntity.ok(orderWithPaymentDtoList);
+
+    }
+
+    @GetMapping("/order/delivered/filter")
+    public ResponseEntity<List<OrderWithPaymentDto>> deliveredFilterOrder(@RequestParam(required = false) String keyword,
+                                                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
+                                                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime
+    ) {
+        List<Orders> orders = orderService.filterDeliveredOrder(keyword, startTime, endTime);
+        List<OrderDto> orderDtos = orders.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
+        if(orderDtos == null) {
+            return ResponseEntity.noContent().build();
+        }
+        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
+        for(OrderDto orderDto : orderDtos) {
+            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
+
+            OrderWithPaymentDto orderWithPaymentDto = new OrderWithPaymentDto(orderDto, paymentInfoDto);
+            orderWithPaymentDtoList.add(orderWithPaymentDto);
+        }
+
+        return ResponseEntity.ok(orderWithPaymentDtoList);
+
+    }
+
+
+    //-------------------------------------------- End Order--------------------------------------//
 }

@@ -4,6 +4,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.tacm.tabooksapi.domain.dto.PaymentInfoDto;
 import com.tacm.tabooksapi.domain.dto.PaymentResDto;
 import com.tacm.tabooksapi.domain.entities.Orders;
 import com.tacm.tabooksapi.domain.entities.PaymentInfo;
@@ -87,5 +88,13 @@ public class PaymentServiceImpl implements PaymentService  {
         }
     }
 
-
+    @Override
+    public PaymentInfoDto getPaymentInfoByOrderId(Long orderId) {
+        PaymentInfo paymentInfo = paymentRepository.findByOrderOrderId(orderId);
+        if(paymentInfo != null) {
+            return  PaymentInfoDto.fromEntity(paymentInfo);
+        } else {
+            return null;
+        }
+    }
 }
