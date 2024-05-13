@@ -13,21 +13,15 @@ import com.tacm.tabooksapi.mapper.impl.BookMapper;
 import com.tacm.tabooksapi.mapper.impl.CategoriesMapper;
 import com.tacm.tabooksapi.mapper.impl.NXBsMapper;
 import com.tacm.tabooksapi.service.*;
-import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Book;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -340,47 +334,75 @@ public class AdminController {
         return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.OK);
     }
 
+    @PutMapping("/order/packed/{orderId}")
+    public ResponseEntity<OrderDto> packedOrder(@PathVariable Long orderId) throws OrderException {
+        Orders orders = orderService.packedOrder(orderId);
+        return new ResponseEntity<>(OrderDto.fromEntity(orders), HttpStatus.OK);
+    }
+
     @GetMapping("/order/pending/filter")
-    public ResponseEntity<List<OrderWithPaymentDto>> pendingFilterOrder(@RequestParam(required = false) String keyword,
+    public ResponseEntity<Page<OrderWithPaymentDto>> pendingFilterOrder(@RequestParam(required = false) String keyword,
                                                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
-                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime,
+                                                                        @RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "10") int size
     ) {
-        List<Orders> orders = orderService.filterPendingOrder(keyword, startTime, endTime);
-        List<OrderDto> orderDtos = orders.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
-        if(orderDtos == null) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Orders> ordersPage = orderService.filterPendingOrder(keyword, startTime, endTime, pageable);
+
+        List<OrderDto> orderDtos = ordersPage.getContent().stream()
+                .map(OrderDto::fromEntity)
+                .collect(Collectors.toList());
+
+        if (orderDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
-        for(OrderDto orderDto : orderDtos) {
-            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
 
+        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
+
+        for (OrderDto orderDto : orderDtos) {
+            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
             OrderWithPaymentDto orderWithPaymentDto = new OrderWithPaymentDto(orderDto, paymentInfoDto);
             orderWithPaymentDtoList.add(orderWithPaymentDto);
         }
 
-        return ResponseEntity.ok(orderWithPaymentDtoList);
+        Page<OrderWithPaymentDto> orderPageWithTotalPages = new PageImpl<>(orderWithPaymentDtoList, pageable, ordersPage.getTotalElements());
+
+        return ResponseEntity.ok(orderPageWithTotalPages);
 
     }
 
     @GetMapping("/order/confirmed/filter")
-    public ResponseEntity<List<OrderWithPaymentDto>> confirmedFilterOrder(@RequestParam(required = false) String keyword,
-                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
-                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime
+    public ResponseEntity<Page<OrderWithPaymentDto>> confirmedFilterOrder(@RequestParam(required = false) String keyword,
+                                                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
+                                                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime,
+                                                                          @RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "10") int size
     ) {
-        List<Orders> orders = orderService.filterConfirmedOrder(keyword, startTime, endTime);
-        List<OrderDto> orderDtos = orders.stream().map(OrderDto::fromEntity).collect(Collectors.toList());
-        if(orderDtos == null) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Orders> ordersPage = orderService.filterConfirmedOrder(keyword, startTime, endTime, pageable);
+
+        List<OrderDto> orderDtos = ordersPage.getContent().stream()
+                .map(OrderDto::fromEntity)
+                .collect(Collectors.toList());
+
+        if (orderDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
-        for(OrderDto orderDto : orderDtos) {
-            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
 
+        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
+
+        for (OrderDto orderDto : orderDtos) {
+            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
             OrderWithPaymentDto orderWithPaymentDto = new OrderWithPaymentDto(orderDto, paymentInfoDto);
             orderWithPaymentDtoList.add(orderWithPaymentDto);
         }
 
-        return ResponseEntity.ok(orderWithPaymentDtoList);
+        Page<OrderWithPaymentDto> orderPageWithTotalPages = new PageImpl<>(orderWithPaymentDtoList, pageable, ordersPage.getTotalElements());
+
+        return ResponseEntity.ok(orderPageWithTotalPages);
 
     }
 

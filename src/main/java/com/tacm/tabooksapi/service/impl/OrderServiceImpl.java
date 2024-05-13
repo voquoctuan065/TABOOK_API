@@ -10,6 +10,8 @@ import com.tacm.tabooksapi.repository.*;
 import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -146,6 +148,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Orders packedOrder(Long id) throws OrderException {
+        Orders orders = findOderById(id);
+        orders.setOrderStatus("PACKED");
+        return orderRepository.save(orders);
+    }
+
+    @Override
     public List<Orders> getAllOrders() {
         return orderRepository.findAll();
     }
@@ -155,14 +164,19 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(orderId);
     }
 
+//    @Override
+//    public List<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
+//        return orderRepository.filterPendingOrder(keyword, startTime, endTime);
+//    }
+
     @Override
-    public List<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
-        return orderRepository.filterPendingOrder(keyword, startTime, endTime);
+    public Page<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
+        return orderRepository.filterPendingOrder(keyword, startTime, endTime, pageable);
     }
 
     @Override
-    public List<Orders> filterConfirmedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
-        return orderRepository.filterConfirmedOrder(keyword, startTime, endTime);
+    public Page<Orders> filterConfirmedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
+        return orderRepository.filterConfirmedOrder(keyword, startTime, endTime, pageable);
     }
 
     @Override

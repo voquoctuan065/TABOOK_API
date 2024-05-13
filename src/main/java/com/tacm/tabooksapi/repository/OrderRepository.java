@@ -1,6 +1,8 @@
 package com.tacm.tabooksapi.repository;
 
 import com.tacm.tabooksapi.domain.entities.Orders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +27,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             "AND ( " +
             "   :keyword IS NULL " +
             "   OR CONCAT(o.shippingAddress.fullName, ' ', " +
+            "            o.shippingAddress.phoneNumber, ' ', " +
             "            o.shippingAddress.ward, ' ', " +
             "            o.shippingAddress.province, ' ', " +
             "            o.shippingAddress.district) " +
@@ -32,13 +35,14 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             ") " +
             "AND (:startTime IS NULL OR o.createdAt >= :startTime) " +
             "AND (:endTime IS NULL OR o.createdAt <= :endTime)")
-    List<Orders> filterPendingOrder(@Param("keyword") String  keyword, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+    Page<Orders> filterPendingOrder(@Param("keyword") String  keyword, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, Pageable pageable);
 
     @Query("SELECT o FROM Orders o WHERE " +
             "o.orderStatus = 'CONFIRMED' " +
             "AND ( " +
             "   :keyword IS NULL " +
             "   OR CONCAT(o.shippingAddress.fullName, ' ', " +
+            "            o.shippingAddress.phoneNumber, ' ', " +
             "            o.shippingAddress.ward, ' ', " +
             "            o.shippingAddress.province, ' ', " +
             "            o.shippingAddress.district) " +
@@ -46,13 +50,14 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             ") " +
             "AND (:startTime IS NULL OR o.createdAt >= :startTime) " +
             "AND (:endTime IS NULL OR o.createdAt <= :endTime)")
-    List<Orders> filterConfirmedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+    Page<Orders> filterConfirmedOrder(@Param("keyword") String  keyword, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, Pageable pageable);
 
     @Query("SELECT o FROM Orders o WHERE " +
             "o.orderStatus = 'SHIPPING' " +
             "AND ( " +
             "   :keyword IS NULL " +
             "   OR CONCAT(o.shippingAddress.fullName, ' ', " +
+            "            o.shippingAddress.phoneNumber, ' ', " +
             "            o.shippingAddress.ward, ' ', " +
             "            o.shippingAddress.province, ' ', " +
             "            o.shippingAddress.district) " +
@@ -67,6 +72,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             "AND ( " +
             "   :keyword IS NULL " +
             "   OR CONCAT(o.shippingAddress.fullName, ' ', " +
+            "            o.shippingAddress.phoneNumber, ' ', " +
             "            o.shippingAddress.ward, ' ', " +
             "            o.shippingAddress.province, ' ', " +
             "            o.shippingAddress.district) " +
