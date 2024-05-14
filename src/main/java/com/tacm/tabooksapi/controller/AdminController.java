@@ -406,6 +406,37 @@ public class AdminController {
 
     }
 
+    @GetMapping("/order/packed/filter")
+    public ResponseEntity<Page<OrderWithPaymentDto>> packedFilterOrder(@RequestParam(required = false) String keyword,
+                                                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
+                                                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime,
+                                                                       @RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Orders> ordersPage = orderService.filterPackedOrder(keyword, startTime, endTime, pageable);
+
+        List<OrderDto> orderDtos = ordersPage.getContent().stream()
+                .map(OrderDto::fromEntity)
+                .collect(Collectors.toList());
+
+        if (orderDtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<OrderWithPaymentDto> orderWithPaymentDtoList = new ArrayList<>();
+
+        for (OrderDto orderDto : orderDtos) {
+            PaymentInfoDto paymentInfoDto = paymentService.getPaymentInfoByOrderId(orderDto.getOrderId());
+            OrderWithPaymentDto orderWithPaymentDto = new OrderWithPaymentDto(orderDto, paymentInfoDto);
+            orderWithPaymentDtoList.add(orderWithPaymentDto);
+        }
+
+        Page<OrderWithPaymentDto> orderPageWithTotalPages = new PageImpl<>(orderWithPaymentDtoList, pageable, ordersPage.getTotalElements());
+
+        return ResponseEntity.ok(orderPageWithTotalPages);
+    }
+
 
     @GetMapping("/order/shipping/filter")
     public ResponseEntity<List<OrderWithPaymentDto>> shippingFilterOrder(@RequestParam(required = false) String keyword,
