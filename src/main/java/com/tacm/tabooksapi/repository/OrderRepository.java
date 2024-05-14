@@ -81,4 +81,19 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             "AND (:startTime IS NULL OR o.createdAt >= :startTime) " +
             "AND (:endTime IS NULL OR o.createdAt <= :endTime)")
     List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("SELECT o FROM Orders o WHERE " +
+            "o.orderStatus = 'PACKED' " +
+            "AND ( " +
+            "   :keyword IS NULL " +
+            "   OR CONCAT(o.shippingAddress.fullName, ' ', " +
+            "            o.shippingAddress.phoneNumber, ' ', " +
+            "            o.shippingAddress.ward, ' ', " +
+            "            o.shippingAddress.province, ' ', " +
+            "            o.shippingAddress.district) " +
+            "       LIKE %:keyword% " +
+            ") " +
+            "AND (:startTime IS NULL OR o.createdAt >= :startTime) " +
+            "AND (:endTime IS NULL OR o.createdAt <= :endTime)")
+    Page<Orders> filterPackedOrder(@Param("keyword") String  keyword, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, Pageable pageable);
 }

@@ -188,4 +188,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
         return orderRepository.filterDeliveredOrder(keyword, startTime, endTime);
     }
+
+    @Override
+    public Page<Orders> filterPackedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
+        return orderRepository.filterPackedOrder(keyword, startTime, endTime, pageable);
+    }
 }

@@ -40,4 +40,6 @@ public interface OrderService {
     List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
 
     Page<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
+
+    Page<Orders> filterPackedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 }
