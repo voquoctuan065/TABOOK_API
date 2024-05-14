@@ -65,7 +65,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             ") " +
             "AND (:startTime IS NULL OR o.createdAt >= :startTime) " +
             "AND (:endTime IS NULL OR o.createdAt <= :endTime)")
-    List<Orders> filterShippingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+    Page<Orders> filterShippingOrder(@Param("keyword") String  keyword, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, Pageable pageable);
 
     @Query("SELECT o FROM Orders o WHERE " +
             "o.orderStatus = 'DELIVERED' " +
@@ -80,7 +80,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             ") " +
             "AND (:startTime IS NULL OR o.createdAt >= :startTime) " +
             "AND (:endTime IS NULL OR o.createdAt <= :endTime)")
-    List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+    Page<Orders> filterDeliveredOrder(@Param("keyword") String  keyword, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, Pageable pageable);
 
     @Query("SELECT o FROM Orders o WHERE " +
             "o.orderStatus = 'PACKED' " +

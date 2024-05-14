@@ -9,6 +9,7 @@ import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.repository.*;
 import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.OrderService;
+import com.tacm.tabooksapi.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,6 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
     private OrderItemRepository orderItemRepository;
     private OrderRepository orderRepository;
-
     @Autowired
     public OrderServiceImpl( BookService bookService,  AddressRepository addressRepository
     ,UserRepository userRepository, OrderItemRepository orderItemRepository, OrderRepository orderRepository
@@ -136,8 +136,12 @@ public class OrderServiceImpl implements OrderService {
     public Orders deliveredOrder(Long id) throws OrderException {
         Orders orders = findOderById(id);
         orders.setOrderStatus("DELIVERED");
-        return orderRepository.save(orders);
+        if (orders.getPaymentInfo() != null) {
+            PaymentInfo paymentInfo = orders.getPaymentInfo();
+            paymentInfo.setPaymentStatus("Đã thanh toán");
+        }
 
+        return orderRepository.save(orders);
     }
 
     @Override
@@ -180,13 +184,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Orders> filterShippingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
-        return orderRepository.filterShippingOrder(keyword, startTime , endTime);
+    public Page<Orders> filterShippingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
+        return orderRepository.filterShippingOrder(keyword, startTime , endTime, pageable);
     }
 
     @Override
-    public List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime) {
-        return orderRepository.filterDeliveredOrder(keyword, startTime, endTime);
+    public Page<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable ) {
+        return orderRepository.filterDeliveredOrder(keyword, startTime, endTime, pageable);
     }
 
     @Override

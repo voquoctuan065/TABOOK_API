@@ -4,6 +4,7 @@ import com.stripe.exception.StripeException;
 import com.tacm.tabooksapi.domain.dto.PaymentInfoDto;
 import com.tacm.tabooksapi.domain.dto.PaymentResDto;
 import com.tacm.tabooksapi.domain.entities.Orders;
+import com.tacm.tabooksapi.domain.entities.PaymentInfo;
 import com.tacm.tabooksapi.exception.OrderException;
 
 public interface PaymentService {

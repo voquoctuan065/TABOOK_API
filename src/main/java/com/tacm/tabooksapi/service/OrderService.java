@@ -35,9 +35,9 @@ public interface OrderService {
 
     Page<Orders> filterConfirmedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 
-    List<Orders> filterShippingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+    Page<Orders> filterShippingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 
-    List<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime);
+    Page<Orders> filterDeliveredOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime , Pageable pageable);
 
     Page<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 
