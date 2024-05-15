@@ -7,6 +7,7 @@ import com.tacm.tabooksapi.domain.entities.*;
 import com.tacm.tabooksapi.exception.OrderException;
 import com.tacm.tabooksapi.exception.ProductException;
 import com.tacm.tabooksapi.repository.*;
+import com.tacm.tabooksapi.service.BookRedisService;
 import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.OrderService;
 import com.tacm.tabooksapi.service.PaymentService;
@@ -29,15 +30,21 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
     private OrderItemRepository orderItemRepository;
     private OrderRepository orderRepository;
+    private BookRedisService bookRedisService;
     @Autowired
-    public OrderServiceImpl( BookService bookService,  AddressRepository addressRepository
-    ,UserRepository userRepository, OrderItemRepository orderItemRepository, OrderRepository orderRepository
+    public OrderServiceImpl( BookService bookService,
+                             AddressRepository addressRepository,
+                             UserRepository userRepository,
+                             OrderItemRepository orderItemRepository,
+                             OrderRepository orderRepository,
+                             BookRedisService bookRedisService
     ) {
         this.bookService = bookService;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
         this.orderItemRepository = orderItemRepository;
         this.orderRepository = orderRepository;
+        this.bookRedisService = bookRedisService;
     }
 
     @Override
@@ -75,6 +82,15 @@ public class OrderServiceImpl implements OrderService {
                 orderItem.setQuantity(item.getQuantity());
                 orderItem.setDiscountedPrice(item.getDiscountedPrice());
                 orderItem.setUserId(users.getUserId());
+
+                int newStockQuantity = books.getStockQuantity() - item.getQuantity();
+                if (newStockQuantity >= 0) {
+                    books.setStockQuantity(newStockQuantity);
+                    bookService.updateBook(books, books.getBookId());
+                    bookRedisService.clear();
+                } else {
+                    throw new IllegalArgumentException("Not enough stock available.");
+                }
 
                 OrderItem createdOrderItem = orderItemRepository.save(orderItem);
                 orderItems.add(createdOrderItem);

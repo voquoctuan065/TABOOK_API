@@ -185,6 +185,16 @@ public class AdminController {
         return new BooksPageDto(booksDtoList, totalPages);
     }
 
+    @GetMapping("/book/oos")
+    public BooksPageDto getOutOfStockBook(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Books> booksPage = bookService.findOutOfStockBook(pageable);
+        List<BooksDto> booksDtoList = booksPage.getContent().stream().map(bookMapper::mapTo).collect(Collectors.toList());
+        int totalPages = booksPage.getTotalPages();
+        return new BooksPageDto(booksDtoList, totalPages);
+    }
+
     @DeleteMapping(path = "/book/delete/{bookId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse> deleteBook(@PathVariable("bookId") Long bookId) throws ApiException {

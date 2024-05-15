@@ -216,4 +216,9 @@ public class BookServiceImpl implements BookService {
     public List<Books> findHotBooks() {
         return bookRepository.findByHotTrue();
     }
+
+    @Override
+    public Page<Books> findOutOfStockBook(Pageable pageable) {
+        return bookRepository.findByStockQuantityEquals(0, pageable);
+    }
 }

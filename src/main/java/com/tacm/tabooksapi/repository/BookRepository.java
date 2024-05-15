@@ -64,4 +64,6 @@ public interface BookRepository extends JpaRepository<Books, Long> {
     List<Books> findDistinctBookWithRatingGreaterThanEqual4();
 
     List<Books> findByHotTrue();
+
+    Page<Books> findByStockQuantityEquals(int i, Pageable pageable);
 }

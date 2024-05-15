@@ -58,4 +58,6 @@ public interface BookService {
     List<Books> findFavoriteBooks();
 
     List<Books> findHotBooks();
+
+    Page<Books> findOutOfStockBook(Pageable pageable);
 }
