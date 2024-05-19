@@ -14,4 +14,6 @@ public interface UserService {
     Users get(String resetPasswordToken) throws UserException;
 
     void updatePassword(Users users, String newPassword);
+
+    Long getTotalUser();
 }

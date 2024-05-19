@@ -11,6 +11,7 @@ import com.tacm.tabooksapi.service.BookRedisService;
 import com.tacm.tabooksapi.service.BookService;
 import com.tacm.tabooksapi.service.OrderService;
 import com.tacm.tabooksapi.service.PaymentService;
+import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -212,5 +213,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Orders> filterPackedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
         return orderRepository.filterPackedOrder(keyword, startTime, endTime, pageable);
+    }
+
+    @Override
+    public Long getTotalOrder() {
+        return orderRepository.count();
+    }
+
+    @Override
+    public Double getTotalRevenue() {
+        List<Orders> orders = orderRepository.findAll();
+        Double totalRevenue = 0.0;
+        for(Orders order : orders) {
+            totalRevenue += order.getTotalPrice();
+        }
+        return totalRevenue;
     }
 }

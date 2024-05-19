@@ -92,4 +92,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         userRepository.save(users);
     }
+
+    @Override
+    public Long getTotalUser() {
+        return userRepository.count();
+    }
 }

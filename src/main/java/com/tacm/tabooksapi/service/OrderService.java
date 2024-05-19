@@ -42,4 +42,8 @@ public interface OrderService {
     Page<Orders> filterPendingOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 
     Page<Orders> filterPackedOrder(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
+
+    Long getTotalOrder();
+
+    Double getTotalRevenue();
 }

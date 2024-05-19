@@ -46,6 +46,7 @@ public class AdminController {
     private NXBsRedisService nxBsRedisService;
     private OrderService orderService;
     private PaymentService paymentService;
+    private UserService userService;
     @Autowired
     public AdminController(CategoriesService categoriesService, CategoriesMapper categoriesMapper,
                            BookService bookService, BookMapper bookMapper,
@@ -54,7 +55,8 @@ public class AdminController {
                            CategoryRedisService categoryRedisService,
                            NXBsRedisService nxBsRedisService,
                            OrderService orderService,
-                           PaymentService paymentService) {
+                           PaymentService paymentService,
+                           UserService userService) {
         this.categoriesService = categoriesService;
         this.categoriesMapper = categoriesMapper;
         this.bookService = bookService;
@@ -66,6 +68,7 @@ public class AdminController {
         this.nxBsRedisService = nxBsRedisService;
         this.orderService = orderService;
         this.paymentService = paymentService;
+        this.userService = userService;
     }
 
 
@@ -227,6 +230,11 @@ public class AdminController {
         } catch (ProductException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/book/total")
+    public Long getTotalBook() {
+        return bookService.getTotalBooks();
     }
 
     //------------------------------------------------- End Book ------------------------------------------------//
@@ -511,5 +519,21 @@ public class AdminController {
     }
 
 
+    @GetMapping("/order/total")
+    public Long getTotalOrder() {
+        return orderService.getTotalOrder();
+    }
+
+    @GetMapping("/revenue/total_revenue")
+    public Double getTotalRevenue() {
+        return orderService.getTotalRevenue();
+    }
+
     //-------------------------------------------- End Order--------------------------------------//
+
+    @GetMapping("/user/total")
+    public Long getTotalUser() {
+        return userService.getTotalUser();
+    }
+
 }
