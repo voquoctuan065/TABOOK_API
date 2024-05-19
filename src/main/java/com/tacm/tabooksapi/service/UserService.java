@@ -8,4 +8,10 @@ public interface UserService {
     Users findUserById(Long userId) throws UserException;
 
     Users findUserProfileByJwt(String jwt) throws UserException;
+
+    void updateResetPasswordToken(String token, String email) throws UserException;
+
+    Users get(String resetPasswordToken) throws UserException;
+
+    void updatePassword(Users users, String newPassword);
 }

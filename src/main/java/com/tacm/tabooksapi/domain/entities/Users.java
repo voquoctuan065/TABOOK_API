@@ -51,4 +51,7 @@ public class Users {
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private List<Address> address = new ArrayList<>();
 
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
 }

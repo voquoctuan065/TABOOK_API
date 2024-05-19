@@ -8,4 +8,6 @@ import com.tacm.tabooksapi.domain.entities.Users;
 
 public interface UserRepository extends JpaRepository<Users, Long> {
     Users findByEmail(String email);
+
+    Users findByResetPasswordToken(String token);
 }

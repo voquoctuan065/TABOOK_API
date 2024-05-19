@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,12 +23,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private UserRepository userRepository;
     private JwtProvider jwtProvider;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl (UserRepository userRepository,
-                            JwtProvider jwtProvider) {
+                            JwtProvider jwtProvider,
+                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -59,5 +63,33 @@ public class UserServiceImpl implements UserDetailsService, UserService {
            throw new UserException("User not found with email " + email);
         }
         return user;
+    }
+
+    @Override
+    public void updateResetPasswordToken(String token, String email) throws UserException {
+        Users users = userRepository.findByEmail(email);
+
+        if(users != null) {
+            users.setResetPasswordToken(token);
+            userRepository.save(users);
+        }
+        else {
+            throw new UserException("User not found with email " + email);
+        }
+    }
+
+    @Override
+    public Users get(String resetPasswordToken) throws UserException {
+        return userRepository.findByResetPasswordToken(resetPasswordToken);
+    }
+
+    @Override
+    public void updatePassword(Users users, String newPassword) {
+        String encodePassword = passwordEncoder.encode(newPassword);
+
+        users.setPassword(encodePassword);
+        users.setResetPasswordToken(null);
+
+        userRepository.save(users);
     }
 }
