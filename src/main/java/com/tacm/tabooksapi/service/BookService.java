@@ -31,7 +31,7 @@ public interface BookService {
     Books findBookById(Long id) throws ProductException;
 //    List<Books> findBookByCategory(String category);
 
-    Page<Books> filterBooks(String pathName, Double minPrice, Double maxPrice
+    Page<Books> filterBooks(Double minPrice, Double maxPrice
     , Long nxbId, String sort, Integer pageNumber, Integer pageSize);
     Page<Books> getPageBook(int page, int size);
 

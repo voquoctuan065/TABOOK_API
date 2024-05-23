@@ -159,7 +159,7 @@ public class BookController {
     }
 
     @GetMapping("/filter")
-    public BooksPageDto getFilterBook(@RequestParam String pathName,
+    public BooksPageDto getFilterBook(
                                       @RequestParam(required = false) Double minPrice,
                                       @RequestParam(required = false) Double maxPrice,
                                       @RequestParam(required = false) Long nxbId,
@@ -167,7 +167,7 @@ public class BookController {
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "10") int size) {
 
-        Page<Books> booksPage = bookService.filterBooks(pathName, minPrice, maxPrice, nxbId, sort, page, size);
+        Page<Books> booksPage = bookService.filterBooks(minPrice, maxPrice, nxbId, sort, page, size);
         List<BooksDto> booksDtoList = booksPage.getContent().stream().map(bookMapper::mapTo).collect(Collectors.toList());
         int totalPages = booksPage.getTotalPages();
         return new BooksPageDto(booksDtoList, totalPages);

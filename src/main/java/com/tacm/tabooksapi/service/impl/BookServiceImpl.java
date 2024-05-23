@@ -83,13 +83,13 @@ public class BookServiceImpl implements BookService {
 //    }
 //
     @Override
-    public Page<Books> filterBooks(String pathName, Double minPrice, Double maxPrice, Long nxbId, String sort, Integer pageNumber, Integer pageSize) {
+    public Page<Books> filterBooks( Double minPrice, Double maxPrice, Long nxbId, String sort, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         List<Books> books ;
         if(nxbId != null) {
-            books = bookRepository.filterBook(pathName,  minPrice, maxPrice, nxbId, sort);
+            books = bookRepository.filterBook( minPrice, maxPrice, nxbId, sort);
         } else {
-            books = bookRepository.filterBook(pathName,  minPrice, maxPrice, sort);
+            books = bookRepository.filterBook( minPrice, maxPrice, sort);
         }
         int startIndex = (int)pageable.getOffset();
         int endIndex = Math.min(startIndex + pageable.getPageSize(), books.size());

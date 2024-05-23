@@ -17,14 +17,12 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Books, Long> {
     @Query(
             "SELECT b FROM Books b " +
-                    "WHERE (:pathName IS NULL OR b.categories.pathName = :pathName) " +
-                    "AND ((:minPrice IS NULL AND :maxPrice IS NULL) OR (b.discountedPrice BETWEEN :minPrice AND :maxPrice)) " +
+                    "WHERE ((:minPrice IS NULL AND :maxPrice IS NULL) OR (b.discountedPrice BETWEEN :minPrice AND :maxPrice)) " +
                     "AND (:nxbId IS NULL OR b.nxbs.nxbId = :nxbId) " +
                     "ORDER BY " +
                     "CASE WHEN :sort = 'price_low' THEN b.discountedPrice END ASC, CASE WHEN :sort = 'price_high' THEN b.discountedPrice END DESC"
     )
     public List<Books> filterBook(
-            @Param("pathName") String pathName,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
             @Param("nxbId") Long nxbId,
@@ -33,13 +31,11 @@ public interface BookRepository extends JpaRepository<Books, Long> {
 
     @Query(
             "SELECT b FROM Books b " +
-                    "WHERE (:pathName IS NULL OR b.categories.pathName = :pathName) " +
-                    "AND ((:minPrice IS NULL AND :maxPrice IS NULL) OR (b.discountedPrice BETWEEN :minPrice AND :maxPrice)) " +
+                    "WHERE ((:minPrice IS NULL AND :maxPrice IS NULL) OR (b.discountedPrice BETWEEN :minPrice AND :maxPrice)) " +
                     "ORDER BY " +
                     "CASE WHEN :sort = 'price_low' THEN b.discountedPrice END ASC, CASE WHEN :sort = 'price_high' THEN b.discountedPrice END DESC"
     )
     public List<Books> filterBook(
-            @Param("pathName") String pathName,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
             @Param("sort") String sort
