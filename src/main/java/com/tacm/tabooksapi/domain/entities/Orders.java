@@ -43,9 +43,6 @@ public class Orders {
     @Column(name = "total_price")
     private Double totalPrice;
 
-    @Column(name = "total_discounted_price")
-    private Double totalDiscountedPrice;
-
     @Column(name = "discount")
     private Double discount;
 

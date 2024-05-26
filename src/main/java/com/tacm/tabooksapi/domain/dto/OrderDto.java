@@ -31,7 +31,6 @@ public class OrderDto {
     private LocalDateTime deliveryDate;
 
     private Double totalPrice;
-    private Double totalDiscountedPrice;
 
     private Double discount;
 
@@ -49,7 +48,6 @@ public class OrderDto {
                 orders.getOrderDate(),
                 orders.getDeliveryDate(),
                 orders.getTotalPrice(),
-                orders.getTotalDiscountedPrice(),
                 orders.getDiscount(),
                 orders.getOrderStatus(),
                 orders.getTotalItem(),

@@ -31,7 +31,6 @@ public class OrderItemDto {
 
     private Long userId;
 
-    private LocalDateTime deliveryDate;
 
     public static OrderItemDto fromEntity(OrderItem orderItem) {
         return new OrderItemDto(
@@ -40,8 +39,7 @@ public class OrderItemDto {
                 orderItem.getQuantity(),
                 orderItem.getPrice(),
                 orderItem.getDiscountedPrice(),
-                orderItem.getUserId(),
-                orderItem.getDeliveryDate()
+                orderItem.getUserId()
         );
     }
 }

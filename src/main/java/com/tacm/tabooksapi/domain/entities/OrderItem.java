@@ -44,7 +44,5 @@ public class OrderItem {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "delivery_date")
-    private LocalDateTime deliveryDate;
 
 }
